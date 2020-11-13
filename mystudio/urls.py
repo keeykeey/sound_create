@@ -15,14 +15,9 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import testfunc,Create_account#, testfunc2, PostedSong,LoginView,LogoutView
+from .views import testfunc, testfunc2,PostedSong
 
 urlpatterns = [
-   path('',testfunc,name = 'test'),
-#    path('test2/',testfunc2,name = 'test2'),
-#    path('mystudio/',PostedSong.as_view(),name='mystudio'),
-#    path('login/', LoginView.as_view(),name = 'login'),
-#    path('logout/', LogoutView.as_view(),name='logout'),
-    path('signin/',Create_account.as_view(),name='signin'),
-    #path('testsignup/',Create_account.as_view(),name='testsignup'),
+    path('test2/',testfunc2,name = 'test2'),
+    path('mystudio/<int:user_id>/',PostedSong.as_view(),name='mystudio'),
 ]
