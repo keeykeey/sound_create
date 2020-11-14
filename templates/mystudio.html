@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block customcss %}
+{% endblock customcss %}
+
+{% block header %}
+<div class="command-form">
+  <a class="btn btn-primary" href="#" role="button">Summarize</a>
+  <button class="btn btn-primary" type="submit">Analyse</button>
+  <a class="btn btn-success" href="#" role="button">Add</a>
+  <input class="btn btn-danger" type="reset" value="Delete All">
+</div>
+
+<div>
+    {% for item in object_list %}
+    <p class="alert alert-dark post-list" role="alert">
+        <b>Song Title</b> : {{item.song_title}}
+        <br><b>Artist</b> : {{item.artist_name}}
+        <br><b>Genre</b> : {{item.genre}}
+        <br><b>Tag</b> : {{item.tag}}
+        <br><b>audio_path</b> : {{item.audio_file}}
+        <br><b>Song_ID</b> : {{item.song_id}}
+        <br><b>User_ID</b> : {{item.user_id}}
+        <!-- 'item.audio_file'だとerror , 'item.audio_file.url'でno error! -->
+        <br><b>Audio</b> : <audio class="audio-control" src='{{item.audio_file.url}}' controls></audio>
+        <br><input class="btn btn-sm btn-info" type="submit" value="Delete">
+    </p>
+    {% endfor %}
+</div>
+{% endblock header  %}
+
+{% block content %}
+    <button class="btn btn-primary back-to-top" >Top</button>
+{% endblock content %}
