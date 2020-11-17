@@ -4,52 +4,36 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render , redirect
 from django.urls import reverse
 from django.views import View
-
 from django.views.generic import ListView
-#from .models import PostedSong
-
-
-# Create your views here.
-def testfunc(request):
-    return render(request,'test.html',{})
-
-def testfunc2(request):
-    return render(request,'test2.html',{})
-
-#class PostedSong(ListView):
-#    template_name = 'mystudio.html'
-#    #model = PostedSong.objects.get(pk=pk)
-#    model = PostedSong
-
-
-#for signup
 from django.contrib.auth.models import User
 from django.contrib.auth import login as auth_login,logout as auth_logout, authenticate
 from django.views.generic import CreateView
-from . forms import UserCreateForm
-class Create_account(CreateView):
+from . forms import UserCreateForm,LoginForm,PostSongForm
+
+#for register
+class Register(CreateView):
     def post(self, request, *args, **kwargs):
         form = UserCreateForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            #フォームから'username'を読み取る
-            username = form.cleaned_data.get('username')
-            #フォームから'password1'を読み取る
-            password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
-            auth_login(request, user)
-            return redirect('/')
-        return render(request, 'create.html', {'form': form,})
+        content_dict = {
+            'form':form,
+            'errorMessage':'Invalid username.',
+        }
+        if not form.is_valid():
+            return render(request,'register.html',content_dict)
+
+        form.save()
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=password)
+        auth_login(request, user)
+        return redirect('/')
 
     def get(self, request, *args, **kwargs):
         form = UserCreateForm(request.POST)
-        return  render(request, 'create.html', {'form': form,})
+        return  render(request, 'register.html', {'form': form,})
 
-''' write again under below'''
-from .forms import LoginForm
+# for login
 class LoginView(AuthLoginView):
-    #form_class = LoginForm
-    #template_name = 'login.html'
     def get(self,request,*args,**kwargs):
         '''method for GET request '''
         context = {
@@ -63,12 +47,69 @@ class LoginView(AuthLoginView):
         if not form.is_valid():
             return render(request,'login.html',{'form':form})
         user = form.get_user()
-        #user = authenticate(request,username=username2,password=password2)
         auth_login(request,user)
-        #return redirect('mystudio')
-        return redirect('mystudio')
+        return redirect('renderpostedsong')
 
+# for logout
 class LogoutView(AuthLoginView):
     def get(self,request,*args,**kwargs):
         auth_logout(request)
-        return redirect('test')
+        return render(request,'logout.html')
+
+# for posting a song
+class PostSongView(View):
+    def post(self,request,*args,**kwargs):
+        form = PostSongForm(data=request.POST)
+        content_dict = {
+            'form':form
+        }
+        if not form.is_valid():
+            return render(request,'postsong',content_dict)
+        form.save()
+        #user_id = request.user.id
+        songTitle = form.cleaned_data.get('song_id')
+        artistName = form.cleaned_data.get('artist_name')
+        genre = form.cleaned_data.get('genre')
+        tag = form.cleaned_data.get('tag')
+        audioFile = form.cleaned_data.get('audio_file')
+        return redirect('renderpostedsong')
+
+    def get(self,request,*args,**kwargs):
+        form = PostSongForm(data=request.POST)
+        return render(request,'postsong.html',{'form':form,})
+
+'''
+song_id = models.AutoField(primary_key=True)
+#user_id = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT)
+user_id = models.ForeignKey(CustomUser,on_delete=models.PROTECT)
+song_title = models.CharField(max_length=50)
+artist_name = models.CharField(max_length=50)
+genre = models.CharField(max_length = 25)
+tag = models.CharField(max_length=50)
+audio_file = models.FileField(default='', upload_to='')
+'''
+
+'''
+class Register(CreateView):
+    def post(self, request, *args, **kwargs):
+        form = UserCreateForm(data=request.POST)
+        content_dict = {
+            'form':form,
+            'errorMessage':'Invalid username.',
+        }
+        if not form.is_valid():
+            return render(request,'register.html',content_dict)
+
+        form.save()
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=password)
+        auth_login(request, user)
+        return redirect('/')
+
+    def get(self, request, *args, **kwargs):
+        form = UserCreateForm(request.POST)
+        return  render(request, 'register.html', {'form': form,})
+'''
+
+        #
