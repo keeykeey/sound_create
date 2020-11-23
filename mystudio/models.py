@@ -12,13 +12,19 @@ from user.models import CustomUser
 
 class PostedSong(models.Model):
     song_id = models.AutoField(primary_key=True)
-    #user_id = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT)
     user_id = models.ForeignKey(CustomUser,on_delete=models.PROTECT)
     song_title = models.CharField(max_length=50)
     artist_name = models.CharField(max_length=50)
     genre = models.CharField(max_length = 25)
     tag = models.CharField(max_length=50)
-    audio_file = models.FileField(default='', upload_to='')
+    audio_file = models.FileField(default='', upload_to='audio/')
 
     def __str__(self):
         return self.song_title
+
+class TestPost(models.Model):
+    text = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='images/',verbose_name='image',null=True,blank=True)
+    audio = models.FileField(default='', upload_to='audio/')
+    def __str__(self):
+        return self.text

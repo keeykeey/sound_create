@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UsernameField,get_user_model
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from .models import CustomUser
-from mystudio.models import PostedSong
+from mystudio.models import PostedSong,TestPost
 
 class UserCreateForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
@@ -36,32 +36,31 @@ class PostSongForm(forms.ModelForm):
     '''form for each users to post their song'''
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
+        #self.fields['song_id'].required = False
+        #self.fields['user_id'].widget.attrs.update({'class':'form-control','placeholder':'Song Title'})
         self.fields['song_title'].widget.attrs.update({'class':'form-control','placeholder':'Song Title'})
         self.fields['artist_name'].widget.attrs.update({'class':'form-control','placeholder':'Artist Name'})
         self.fields['genre'].widget.attrs.update({'class':'form-control','placeholder':'Genre'})
         self.fields['tag'].widget.attrs.update({'class':'form-control','placeholder':'Tag'})
-        self.fields['song_id'].widget.attrs.update({'class':'form-control','placeholder':'Song Id'})
         self.fields['audio_file'].widget.attrs.update({'class':'form-control','placeholder':'Audio File'})
 
     class Meta:
         model = PostedSong
+        #fields = ('song_title','artist_name',)
+        #fields = ('user_id','song_title','artist_name','genre','tag','song_id','audio_file')
         fields = ('song_title','artist_name','genre','tag','song_id','audio_file')
 
+class TestPostForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields['text'].widget.attrs.update({'placeholder':'text'})
+        self.fields['image'].widget.attrs.update({'placehodler':'image upload'})
+        self.fields['audio'].widget.attrs.update({'placehodler':'audio upload'})
+    class Meta:
+        model = TestPost
+        fields = ('text','image','audio')
 
-'''
-class PostedSong(models.Model):
-    song_id = models.AutoField(primary_key=True)
-    #user_id = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT)
-    user_id = models.ForeignKey(CustomUser,on_delete=models.PROTECT)
-    song_title = models.CharField(max_length=50)
-    artist_name = models.CharField(max_length=50)
-    genre = models.CharField(max_length = 25)
-    tag = models.CharField(max_length=50)
-    audio_file = models.FileField(default='', upload_to='')
 
-    def __str__(self):
-        return self.song_title
-'''
 
 
 
