@@ -32,23 +32,23 @@ class LoginForm(AuthenticationForm):
        model = CustomUser
        fields = ("username", "password")
 
-class PostSongForm(forms.ModelForm):
-    '''form for each users to post their song'''
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
+#class PostSongForm(forms.ModelForm):
+#    '''form for each users to post their song'''
+#    def __init__(self,*args,**kwargs):
+#        super().__init__(*args,**kwargs)
         #self.fields['song_id'].required = False
         #self.fields['user_id'].widget.attrs.update({'class':'form-control','placeholder':'Song Title'})
-        self.fields['song_title'].widget.attrs.update({'class':'form-control','placeholder':'Song Title'})
-        self.fields['artist_name'].widget.attrs.update({'class':'form-control','placeholder':'Artist Name'})
-        self.fields['genre'].widget.attrs.update({'class':'form-control','placeholder':'Genre'})
-        self.fields['tag'].widget.attrs.update({'class':'form-control','placeholder':'Tag'})
-        self.fields['audio_file'].widget.attrs.update({'class':'form-control','placeholder':'Audio File'})
+#        self.fields['song_title'].widget.attrs.update({'class':'form-control','placeholder':'Song Title'})
+#        self.fields['artist_name'].widget.attrs.update({'class':'form-control','placeholder':'Artist Name'})
+#        self.fields['genre'].widget.attrs.update({'class':'form-control','placeholder':'Genre'})
+#        self.fields['tag'].widget.attrs.update({'class':'form-control','placeholder':'Tag'})
+#        self.fields['audio_file'].widget.attrs.update({'class':'form-control','placeholder':'Audio File'})
 
-    class Meta:
-        model = PostedSong
+#    class Meta:
+#        model = PostedSong
         #fields = ('song_title','artist_name',)
         #fields = ('user_id','song_title','artist_name','genre','tag','song_id','audio_file')
-        fields = ('song_title','artist_name','genre','tag','song_id','audio_file')
+#        fields = ('song_title','artist_name','genre','tag','song_id','audio_file')
 
 class TestPostForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):

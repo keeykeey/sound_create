@@ -15,13 +15,6 @@ class CustomUser(AbstractUser):
         settings.AUTH_USER_MODEL,verbose_name='users you follow',through = 'UserRelations',
         related_name = '+',through_fields=('follower','followee')
     )
-    '''or perhaps this writing pattern ...
-    class User(AbstractUser):
-        followers = models.ManyToManyField(
-            'User', verbose_name='フォローされているユーザー', through='FriendShip',
-            related_name='followees', through_fields=('followee', 'follower')
-        )
-    '''
 
     def __str__(self):
         return self.username

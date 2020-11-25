@@ -16,15 +16,12 @@ Including another URLconf
 
 from django.urls import path
 from .views import Register,LoginView,LogoutView
-from mystudio.views import RenderPostedSong
-from .views import PostSongView,TestPostView,TestPostView,RenderTestPost
+from .views import TestPostView,TestPostView,RenderTestPost
 
 urlpatterns = [
     path('login/', LoginView.as_view(),name = 'login'),
     path('logout/', LogoutView.as_view(),name='logout'),
     path('register/',Register.as_view(),name='register'),
-    path('mystudio/',RenderPostedSong.as_view(),name='renderpostedsong'),
-    path('mysong/',PostSongView.as_view(),name='postsongview'),
     path('testpost/',TestPostView.as_view(),name='testpost'),
     path('rendertestpost/',RenderTestPost.as_view(),name='rendertestpost'),
 ]
