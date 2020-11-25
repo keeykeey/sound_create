@@ -15,9 +15,12 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import testfunc, testfunc2,PostedSong
+from .views import testfunc, testfunc2,RenderPostedSong,RenderPostedSongToPublic,PostSongFormView,SongEditView
 
 urlpatterns = [
-    path('test2/',testfunc2,name = 'test2'),
-    path('mystudio/<int:user_id>/',PostedSong.as_view(),name='mystudio'),
+    path('',testfunc2,name = 'test2'),
+    path('public/',RenderPostedSongToPublic.as_view(),name='public'),
+    path('postsong/',PostSongFormView.as_view(),name='postsongview'),
+    path('mypage/',RenderPostedSong.as_view(),name='postsongview'),
+    path('mysong/<int:pk>',SongEditView.as_view(),name='songeditview'),
 ]
