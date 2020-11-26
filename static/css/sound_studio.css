@@ -1,0 +1,36 @@
+.darkmode{
+  background-color : #202535 ;
+}
+
+.fix{
+  position:fixed;
+}
+
+.big-title{
+  height : 100% ;
+  font-size : 40px ;
+  font-weight : bold ;
+  font-style : italic;
+  color : #dfdfdf ;
+  background-color : black ;
+  font-family:'arial';
+  display:flex;
+  flex-direction:row;
+  margin-bottom : 0.1em;
+}
+
+.command-form{
+  margin-bottom: 0.1em;
+}
+
+.post-list{
+  margin-left : 0.8em;
+  margin-right : 0.8em;
+  padding-left : 0.8em;
+  padding-right : 0.8em;
+}
+
+.audio-control{
+  height : 1.2em;
+  width : 30em;
+}
