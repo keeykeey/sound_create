@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+ db:
+   image: postgres
+   environment:
+     - POSTGRES_DB=sound_create
+     - POSTGRES_USER=shinfujito
+     - POSTGRES_PASSWORD=p@ssword
+   ports:
+     - "5432:5432"
+ backend:
+   build: "./backend/Docker"
+   ports:
+     - "8000:8000"
+   volumes:
+     - ./backend:/workspace
+
+   command:
+      bash -c "python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000 "
+
+   depends_on:
+     - db
