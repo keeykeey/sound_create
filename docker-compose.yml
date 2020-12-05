@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
  db:
@@ -23,3 +23,13 @@ services:
 
    depends_on:
      - db
+
+ frontend:
+   build: "./frontend/Docker"
+   volumes:
+     -  ./frontend:/workspace
+   ports:
+     - "3000:3000"
+   command: npm start
+   depends_on:
+     - backend
