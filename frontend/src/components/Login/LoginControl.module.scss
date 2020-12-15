@@ -1,0 +1,47 @@
+.login_form_area{
+  background-color : #ffffff ;
+  border-style:  solid ;
+  border-width: thin;
+  border-color : #d0d0d0 ;
+  background-color: #fefefe;
+  width : 340px ;
+  margin : 0 auto  ;
+  .locate_center{
+    text-align:center;
+  }
+  .title{
+    font-size:30px;
+    text-align: center;
+  }
+  .form_content{
+    height : 28px;
+    width : 288px;
+    margin: 0 20 0 20;
+  }
+  .button{
+    height : 36px;
+    width : 296px;
+    font-size:16px;
+    background-color : #ffcc55;
+  }
+  .description{
+    font-size:11.5px;
+  }
+}
+
+.path_to_register{
+  width : 340px ;
+  margin : 0 auto;
+  text-align:center;
+  .description_to_register{
+    font-size:11.5px;
+  }
+  .button_to_register{
+    height : 36px;
+    width : 296px;
+    font-size:16px;
+    border-width : thin;
+    border-color : #f0f0f0;
+    background-color : #f0f0f0;
+  }
+}
