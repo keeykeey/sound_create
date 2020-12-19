@@ -28,6 +28,7 @@ services:
    build: "./frontend/Docker"
    volumes:
      -  ./frontend:/workspace
+     -  ./workspace/node_modules
    ports:
      - "3000:3000"
    command: npm start
