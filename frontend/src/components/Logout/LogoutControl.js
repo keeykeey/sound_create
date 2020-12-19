@@ -1,4 +1,4 @@
-import React, {useState,useRef} from 'react';
+import React from 'react';
 import Style from './LogoutControl.module.scss';
 import AuthService from '../../services/auth.service.js';
 import Form from 'react-validation/build/form';
