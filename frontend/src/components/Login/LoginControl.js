@@ -1,14 +1,15 @@
-import React, {useState,useRef} from 'react';
-import Style from './LoginControl.module.scss';
-import AuthService from '../../services/auth.service.js';
-import Form from 'react-validation/build/form';
+import React, {useState,useRef} from 'react'
+import Style from './LoginControl.module.scss'
+import AuthService from '../../services/auth.service.js'
+import Form from 'react-validation/build/form'
+import Input from 'react-validation/build/input'
 import {withRouter} from 'react-router-dom';//to enable props.history.push
 
 const required = (value) => {
   if (!value){
     return (
-      <div role='alert'>
-        this field is required!
+      <div className={Style.alert_text} role='alert'>
+        入力必須です。
       </div>
     );
   }
@@ -16,55 +17,57 @@ const required = (value) => {
 
 const LoginControl = (props) => {
   const form = useRef();
-  const checkBtn = useRef();
 
   const [username,setUsername] = useState('');
   const [password,setPassword] = useState('');
+  const [isAgreedOnCheckbox,setIsAgreedOnCheckbox] = useState(false);
   const [loading,setLoading] = useState(false);
-  const [message,setMessage] = useState('');
 
   const onChangeUsername = (event) => {
     const username = event.target.value;
-    console.log('username:',username)
     setUsername(username);
   };
 
   const onChangePassword = (event) => {
     const password = event.target.value;
-    console.log('password:',password)
     setPassword(password);
+  }
+
+  const onChangeCheckbox = () => {
+    const checkbox = document.querySelector('#agree');
+    const isAgreed = checkbox.checked;
+    setIsAgreedOnCheckbox(isAgreed)
   }
 
   const handleLogin = (event) => {
     event.preventDefault();
-    setMessage('');
     setLoading(true);
 
     form.current.validateAll();
 
-    if (checkBtn | 1*0 === 0){
+    if (isAgreedOnCheckbox){
       AuthService.login(username,password).then(
         () => {
           props.history.push('/');
           window.location.reload();
         },
         (error) => {
-          console.log('error...')
-          const resMessage =
-            (error.response &&
-               error.response.data &&
-               error.response.data.message) ||
-             error.message ||
-             error.toString();
-          setLoading(false);
-          setMessage(resMessage);
-          alert('認証に失敗しました。名前とパスワードを確認して下さい。');
+          const askForValidInput = document.querySelector('#askForValidInput')
+          askForValidInput.innerHTML='認証に失敗しました。名前とパスワードを確認して下さい。'
         }
       );
     }else{
+      const askForConsent = document.querySelector('#askForConsent')
+      askForConsent.innerHTML = '利用規約に同意してログインする場合は、<br/>チェックボックスにチェックして下さい。'
       setLoading(false);
     }
   };
+
+  const handleMoveToRegister = (event) => {
+    event.preventDefault();
+    props.history.push('/register/');
+    window.location.reload();
+  }
 
   return(
     <div>
@@ -75,7 +78,7 @@ const LoginControl = (props) => {
         <Form onSubmit={handleLogin} ref={form}>
           <div className={Style.locate_center}>
           <label>
-            <input
+            <Input
               className={Style.form_content}
               type='text'
               onChange={onChangeUsername}
@@ -83,7 +86,7 @@ const LoginControl = (props) => {
               name='username'
               placeholder='username'
             />
-            <input
+            <Input
               className={Style.form_content}
               type='password'
               onChange={onChangePassword}
@@ -92,7 +95,20 @@ const LoginControl = (props) => {
               placeholder='password'
             />
           </label>
-          <p/>
+            <p className={Style.description}>
+              <input
+                className={Style.checkbox}
+                type='checkbox'
+                value = 'true'
+                id = 'agree'
+                onChange={onChangeCheckbox}
+              />
+              ログインするにあたり<a href='/'>利用規約</a>に同意します。
+            </p>
+            <p
+              className={Style.alert_text}
+              id='askForConsent'>
+            </p>
             <button className={Style.button} disabled={loading} >
               {loading}
               <span>
@@ -100,8 +116,9 @@ const LoginControl = (props) => {
               </span>
               <i className="fas fa-sign-in-alt"></i>
             </button>
-            <p className={Style.description}>
-              ログインすることで<a href='/'>利用規約</a>に同意するものとみなされます。
+            <p
+              className={Style.alert_text}
+              id='askForValidInput'>
             </p>
           </div>
         </Form>
@@ -111,7 +128,7 @@ const LoginControl = (props) => {
         <p className={Style.description_to_register}>
           初めてのご利用ですか？
         </p>
-        <Form>
+        <Form onSubmit={handleMoveToRegister}>
           <a href='/'><button className={Style.button_to_register} type='submit'>
             アカウントを作成する<span/><i className="fas fa-user-plus"></i>
           </button></a>
