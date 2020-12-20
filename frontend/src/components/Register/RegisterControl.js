@@ -1,7 +1,7 @@
 import React, { useState ,useRef} from 'react'
 import Form from 'react-validation/build/form'
 import Input from 'react-validation/build/input'
-import Style from './Register.module.scss'
+import Style from './RegisterControl.module.scss'
 import AuthService from '../../services/auth.service.js'
 import {isEmail} from 'validator'
 import {withRouter} from 'react-router-dom';//to enable props.history.push
