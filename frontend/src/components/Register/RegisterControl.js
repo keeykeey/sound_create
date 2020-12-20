@@ -155,7 +155,7 @@ const RegisterControl = (props)=> {
               validations = {[required,validPassword]}
               name='password1'
               placeholder='password'
-            />{inputPassword1}
+            />
             <Input
               className={Style.form_content}
               id = 'password2'
@@ -164,7 +164,7 @@ const RegisterControl = (props)=> {
               validations = {[required,checkPw1AndPw2]}
               name='password2'
               placeholder='password again'
-            />{inputPassword2}
+            />
           </label>
             <p className={Style.description}>
               <input
