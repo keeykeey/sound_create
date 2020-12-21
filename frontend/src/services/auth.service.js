@@ -1,49 +1,47 @@
 import axios from 'axios';
 
-const API_URL = 'http:localhost:8000/api/auth/';
-const TOKEN = 'Token 686f3dcae81cfe82ec6c84fc8f2ab0a953a9fd05'
+const DRFCUSTOMUSER_API_URL = 'http://localhost:8000/user/drfcustomuser/'
+const JWT_API_URL = 'http://localhost:8000/api/auth/jwt/';
 
-const register = (username,email,password1,password2) => {
-  return axios.post(API_URL + 'signup',{
+const register = (username,email,password) => {
+  return axios.post(DRFCUSTOMUSER_API_URL,{
     username,
     email,
-    password1,
-    password2,
+    password,
   });
 };
 
 const login = (username,password) => {
   return axios
-    .post(API_URL + 'signin',{
+    .post(JWT_API_URL + 'create/',{
       username,
       password,
     })
     .then((response) => {
-      if (response.data.accessToken){
+      if (response.data.access){
         localStorage.setItem('user',JSON.stringify(response.data));
+        localStorage.setItem('username',username);
+        console.log(localStorage);
       }
-
       return response.data;
     });
 };
 
 const logout = () => {
   localStorage.removeItem('user');
+  localStorage.removeItem('username');
 }
 
 const getCurrentUser = () => {
   return JSON.parse(localStorage.getItem('user'));
 };
 
-esport default {
+export default {
   register,
   login,
   logout,
   getCurrentUser,
 };
-
-
-
 
 
 
