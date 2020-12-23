@@ -80,7 +80,7 @@ const RegisterControl = (props)=> {
   const checkPw1AndPw2 = () => {
     const password1 = document.querySelector('#password1').value
     const password2 = document.querySelector('#password2').value
-    if (password1 != password2){
+    if (password1 !== password2){
       return (
         <div className={Style.alert_text} role='alert'>
           パスワードが一致しません。
