@@ -1,0 +1,22 @@
+.leftSide{
+  text-align:center;
+  margin: 56px auto auto 0;
+  width:235px;
+  height:500px;
+  overflow-y:scroll;
+  background-color:#ffffff;
+}
+
+.rightSide{
+  text-align:center;
+  margin: 56px 0 auto auto;
+  width:100%;
+  height:500px;
+  overflow-y:scroll;
+  background-color:#f0f0f0;
+}
+
+.row{
+  display:flex;
+  flex-direction:row;
+}
