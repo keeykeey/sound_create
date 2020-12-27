@@ -54,8 +54,6 @@ const RegisterControl = (props)=> {
   const [inputPassword1,setInputPassword1] = useState('');
   const [inputPassword2,setInputPassword2] = useState('');
   const [isAgreedOnCheckbox,setIsAgreedOnCheckbox] = useState(false);
-  const [isSuccessful,setIsSuccessful] = useState(false);
-  const [message,setMessage] = useState('');
 
   const handleInputUsername = (event) => {
     const username = event.target.value;
@@ -102,8 +100,6 @@ const RegisterControl = (props)=> {
     if (isAgreedOnCheckbox){
       AuthService.register(inputUsername,inputEmailAdress,inputPassword1).then(
         (response) => {
-          setMessage(response.data.message);
-          setIsSuccessful(true);
         },
         (error) => {
             const askForValidInput = document.querySelector('#askForValidInput')
@@ -198,11 +194,11 @@ const RegisterControl = (props)=> {
         <p className={Style.description_to_login}>
           既にアカウントをお持ちですか？
         </p>
-        <Form onSubmit={handleMoveToLogin}>
+        <form onSubmit={handleMoveToLogin}>
           <a href='/'><button className={Style.button_to_login} type='submit'>
             ログイン画面へ<span/> <i className="fas fa-sign-in-alt"></i>
           </button></a>
-        </Form>
+        </form>
       </div>
     </div>
   );

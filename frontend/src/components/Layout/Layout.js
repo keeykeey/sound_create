@@ -3,7 +3,12 @@ import Style from './Layout.module.scss'
 import Header from '../Header/Header'
 import Sidebar from '../Sidebar/Sidebar'
 import MainContents from '../MainContents/MainContents'
+import AuthService from '../../services/auth.service'
 
+const loginName = localStorage.getItem('username')
+const loginId = localStorage.getItem('user_id');
+
+console.log('localstorage',localStorage)
 
 const MypageLayout = ({children})=>{
   return(
@@ -16,7 +21,7 @@ const MypageLayout = ({children})=>{
           <Sidebar/>
         </div>
         <div className={Style.rightSide}>
-          <MainContents.Mypage/>
+          <MainContents.Mypage loginName={loginName} loginId={loginId}/>
         </div>
       </div>
     </div>
@@ -32,7 +37,9 @@ const MysongLayout = (props) => {
   )
 }
 
-export default {
+const Layout = {
   MypageLayout,
   MysongLayout,
-};
+}
+
+export default Layout;

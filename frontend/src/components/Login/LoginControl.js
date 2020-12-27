@@ -46,9 +46,11 @@ const LoginControl = (props) => {
     form.current.validateAll();
 
     if (isAgreedOnCheckbox){
-      AuthService.login(username,password).then(
+      AuthService.login(username,password)
+      .then(AuthService.getUserId(username))
+      .then(
         () => {
-          props.history.push('/');
+          props.history.push('/mypage/');
           window.location.reload();
         },
         (error) => {
@@ -78,7 +80,7 @@ const LoginControl = (props) => {
         <Form onSubmit={handleLogin} ref={form}>
           <div className={Style.locate_center}>
           <label>
-            <Input
+            <input
               className={Style.form_content}
               type='text'
               onChange={onChangeUsername}
@@ -86,7 +88,7 @@ const LoginControl = (props) => {
               name='username'
               placeholder='username'
             />
-            <Input
+            <input
               className={Style.form_content}
               type='password'
               onChange={onChangePassword}
@@ -128,11 +130,11 @@ const LoginControl = (props) => {
         <p className={Style.description_to_register}>
           初めてのご利用ですか？
         </p>
-        <Form onSubmit={handleMoveToRegister}>
+        <form onSubmit={handleMoveToRegister}>
           <a href='/'><button className={Style.button_to_register} type='submit'>
             アカウントを作成する<span/><i className="fas fa-user-plus"></i>
           </button></a>
-        </Form>
+        </form>
       </div>
     </div>
   );
