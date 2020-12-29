@@ -13,11 +13,6 @@ const register = (username,email,password) => {
   });
 };
 
-const getUserId2 = (username) => {
-  const user_id = axios.get(DRFCUSTOMUSER_API_URL)
-  .then(res=>console.log('getuserid',res.data.filter(key=>key.username==username)[0]))
-}
-
 const getUserId = (username) => {
   const user_id = axios.get(DRFCUSTOMUSER_API_URL)
   .then(res => {
@@ -26,9 +21,9 @@ const getUserId = (username) => {
   },[])
 }
 
-const sample = (username) =>{
-  alert(username);
-}
+const getCurrentUser = () => {
+  return JSON.parse(localStorage.getItem('user'));
+};
 
 const login = (username,password) => {
   return axios
@@ -49,27 +44,14 @@ const logout = () => {
   localStorage.removeItem('user_id')
   localStorage.removeItem('user');
   localStorage.removeItem('username');
-  localStorage.removeItem('test');
 }
-
-const getCurrentUser = () => {
-  return JSON.parse(localStorage.getItem('user'));
-};
-
-
 
 const AuthService = {
   register,
   getUserId,
-  getUserId2,
   login,
   logout,
   getCurrentUser,
 };
 
 export default AuthService
-
-
-
-
-//
