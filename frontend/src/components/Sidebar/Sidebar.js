@@ -9,16 +9,16 @@ const Sidebar = (props) => {
       <div>
         <div className={Style.title}> ページ</div>
           <Link to='/'>
-            <button className={Style.button} >ホーム/</button>
+            <button className={Style.button} >ホーム</button>
           </Link>
-          <Link to='/uprising/'>
-            <button className={Style.button} > 急上昇 uprising</button>
+          <Link to='uprising'>
+            <button className={Style.button} > 急上昇 </button>
           </Link>
           <Link to='famous'>
-            <button className={Style.button} > 人気 famous</button>
+            <button className={Style.button} > 人気 </button>
           </Link>
-          <Link to = '/mypage'>
-            <button className={Style.button} > マイページ mypage</button>
+          <Link to = 'mypage'>
+            <button className={Style.button} > マイページ </button>
           </Link>
 
         <div className={Style.title}>お気に入り</div>
