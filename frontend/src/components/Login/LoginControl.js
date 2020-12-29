@@ -50,7 +50,7 @@ const LoginControl = (props) => {
       .then(AuthService.getUserId(username))
       .then(
         () => {
-          props.history.push('/mypage/');
+          props.history.push('/');
           window.location.reload();
         },
         (error) => {
@@ -141,23 +141,3 @@ const LoginControl = (props) => {
 };
 
 export default withRouter(LoginControl)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
