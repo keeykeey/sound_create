@@ -1,7 +1,4 @@
 from django.contrib import admin
-from .models import PostedSong,TestPost
-
-# Register your models here.
+from .models import PostedSong
 
 admin.site.register(PostedSong)
-admin.site.register(TestPost)
