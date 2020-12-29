@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Style from './Header.module.scss'
-import LogoutControl from '../Logout/LogoutControl'
 
 function formatName(user){
   return user.name;
@@ -18,7 +17,6 @@ function getGreeting(auth_username){
   return <h3>You're Welcome! </h3>;
 }
 
-
 const Header = () => {
   return (
     <div className={ Style.header }>
@@ -33,9 +31,6 @@ const Header = () => {
       </div>
       <div className={ Style.item}>
         { getGreeting(auth_username) }
-      </div>
-      <div className= {Style.logout}>
-        <LogoutControl/>
       </div>
     </div>
   )
