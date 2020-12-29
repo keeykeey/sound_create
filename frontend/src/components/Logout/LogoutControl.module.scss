@@ -1,8 +1,15 @@
 .button{
-  margin:10 10 10 10;
+  margin:20 10 20 10;
   height : 30px;
   width : 50px;
   font-size:12px;
   background-color : #ffcc55;
   border : #303530;
+}
+
+.button:hover{
+  border-style:ridge;
+  height:35px;
+  width:60px;
+  border-color:#ffcc55;
 }
