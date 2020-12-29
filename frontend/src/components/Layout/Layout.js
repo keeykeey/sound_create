@@ -3,10 +3,11 @@ import Style from './Layout.module.scss'
 import Header from '../Header/Header'
 import Sidebar from '../Sidebar/Sidebar'
 import MainContents from '../MainContents/MainContents'
-import AuthService from '../../services/auth.service'
+import Login from '../../pages/Login'
+import AuthInsideLayout from './AuthInsideLayout'
 
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import SwitchMainContents from './SwitchMainContents'
+import { HashRouter as Router, Route, Switch } from 'react-router-dom'
+import Auth from '../../pages/Auth'
 
 const loginName = localStorage.getItem('username')
 const loginId = localStorage.getItem('user_id');
@@ -32,9 +33,12 @@ const HomeLayout = (props)=>{
               <Route path='/famous/'>
                 <MainContents.Famous/>
               </Route>
+              <Route path='/login/' component={Login}/>
+
               <Route path='/mypage/'>
                 <MainContents.Mypage loginName={loginName} loginId={loginId}/>
               </Route>
+
               <Route component = {MainContents.Public}/>
             </Switch>
           </div>
