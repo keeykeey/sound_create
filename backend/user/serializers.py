@@ -18,4 +18,4 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class UserRelationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserRelations
-        fields = ('follower','followee')
+        fields = ('follower','followee','related_day','related_time')
