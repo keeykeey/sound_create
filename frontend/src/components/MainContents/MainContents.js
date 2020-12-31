@@ -8,7 +8,7 @@ const DRFPOSTSONG_API_URL = endPoint.getPostSongUrl()
 const DRFLIKES_API_URL = endPoint.getLikesUrl()
 const DRFCUSTOMUSER_API_URL = endPoint.getCustomUserUrl()
 
-const setLikesCount = (song_id,user_id) =>{
+const pushLikesIcon = (song_id,user_id) =>{
   const likeIcon = document.querySelector(
     '#likeOf'+String(song_id)+'and'+String(user_id)
   )
@@ -22,17 +22,30 @@ const setLikesCount = (song_id,user_id) =>{
         function(error){
           if(!error.response){
             likeIcon.innerHTML=String(presentLikeNum+1)
-            console.log('pushing like icon succeed!')
           }
         }
       ).catch(
         function(error){
           if(error.response){
-            console.log('pusshing like icon failed')
+            subtractLikeNumInDb(song_id,user_id)
+            likeIcon.innerHTML=String(presentLikeNum-1)
           }
         }
       )
   )
+}
+
+const subtractLikeNumInDb = (song_id,user_id) => {
+  const promiseOnj=axios.get(DRFLIKES_API_URL).then(
+    res=>res.data.filter(
+      key=>String(key.song_id)===String(song_id)
+    ).filter(
+      key=>String(key.user_id)===String(user_id)
+    )[0]['id']
+  ).then(
+    res=>{
+      axios.delete(DRFLIKES_API_URL+res)
+    })
 }
 
 const SongGridItemForPublic = (
@@ -40,15 +53,15 @@ const SongGridItemForPublic = (
   audio_file,
   user_id,
   song_id,
-  likes,
+  likes_count,
 )=>{
   return(
   <div className={Style.eachSongBlock}>
     <div className={Style.songTitle} >{song_title} </div>
     <audio className={Style.audio} src={String(audio_file)} controls/>
     <div className={Style.userName} >user_name : {getUserNameFromUserId(user_id)}</div>
-    <button onClick={(e)=>setLikesCount(song_id,user_id,e)} >
-      <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+user_id}>{likes}</i>
+    <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,user_id,e)} >
+      <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+user_id}>{likes_count}</i>
     </button>
   </div>)
 }
@@ -58,12 +71,17 @@ const SongGridItemForPrivate = (
   audio_file,
   user_id,
   song_id,
-  likes,
+  likes_count,
 )=>{
   return(
     <div className={Style.eachSongBlock}>
       <div className={Style.songTitle}>{song_title} </div>
       <audio className={Style.audio} src={audio_file} controls/>
+      <div>
+        <button className={Style.like} onClick={(e)=>pushLikesIcon(song_id,user_id,e)} >
+          <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+user_id}>{likes_count}</i>
+        </button>
+      </div>
     </div>)
 }
 
@@ -78,7 +96,7 @@ const getUserNameFromUserId=(user_id)=>{
 
 const Public = (props) => {
   const [song,setSong] = useState([])
-  const [likes,setLikes] = useState([])
+  const [like,setLike] = useState([])
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL)
@@ -87,7 +105,7 @@ const Public = (props) => {
 
   useEffect(()=>{
     axios.get(DRFLIKES_API_URL)
-    .then(res=>{setLikes(res.data)})
+    .then(res=>{setLike(res.data)})
   },[]);
 
   return(
@@ -102,12 +120,9 @@ const Public = (props) => {
           song.audio_file,
           song.user_id,
           song.song_id,
-          likes.filter(key=>String(key.song_id)===String(song.song_id)).length
+          like.filter(key=>String(key.song_id)===String(song.song_id)).length,
         ))}
       </ul>
-      <div>
-        End of the page
-      </div>
     </div>
   )
 }
@@ -136,16 +151,22 @@ const Famous = (props) => {
 
 const Mypage = (props) => {
   const [song,setSong] = useState([])
+  const [like,setLike] = useState([])
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL)
   .then(res=>{setSong(res.data.filter(key=>String(key.user_id)===String(props.loginId)))})
 },[props.loginId]);
 
+useEffect(()=>{
+  axios.get(DRFLIKES_API_URL)
+  .then(res=>{setLike(res.data)})
+},[]);
+
   return(
     <div>
       <h3>
-        Mypage main content
+        {props.loginName}'s page
       </h3>
       <hr/>
       <ul>
@@ -153,15 +174,13 @@ const Mypage = (props) => {
           song => SongGridItemForPrivate(
             song.song_title,
             song.audio_file,
+            song.user_id,
+            song.song_id,
+            like.filter(key=>String(key.song_id)===String(song.song_id)).length,
           )
         )
         }
-        <div>
-          <br/>oh2 {props.loginName} wao2
-          <br/>oh3 {props.loginId} wao3
-        </div>
       </ul>
-      End of the page
     </div>
   )
 }
@@ -175,8 +194,9 @@ const MysongDetail = (props) => {
 }
 
 const FollowingUsersPage = (props) =>{
-  const [song,setSong]=useState([]);
   const {followeeId} =useParams();
+
+  const [song,setSong]=useState([]);
   const [likes,setLikes] = useState([])
 
   useEffect(()=>{
