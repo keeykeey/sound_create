@@ -1,9 +1,28 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import axios from 'axios'
 import Style from './Sidebar.module.scss'
 import LogoutControl from '../Logout/LogoutControl'
 import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
+import endPoint from '../../services/endPoint';
+
+const LinkButtonToFollowintUser = (
+  followeeId
+)=>{
+  return(
+    <Link to={'/follow/'+followeeId}>
+      <button className={Style.button} > {followeeId} </button>
+    </Link>
+)}
 
 const Sidebar = (props) => {
+  const DRFUSERRELATION_API_URL = endPoint.getUserRelationUrl()
+  const [userRelations,setUserRelations] = useState([])
+  useEffect(() =>{
+    axios.get(DRFUSERRELATION_API_URL).then(
+      res=>{
+        setUserRelations(res.data.filter(key=>key.follower==props.loginId))
+      })
+  },[])
 
   return(
       <div>
@@ -11,32 +30,23 @@ const Sidebar = (props) => {
           <Link to='/'>
             <button className={Style.button} >ホーム</button>
           </Link>
-          <Link to='uprising'>
+          <Link to='/uprising'>
             <button className={Style.button} > 急上昇 </button>
           </Link>
-          <Link to='famous'>
+          <Link to='/famous'>
             <button className={Style.button} > 人気 </button>
           </Link>
-          <Link to = 'mypage'>
+          <Link to={'/mypage/'+props.loginName}>
             <button className={Style.button} > マイページ </button>
           </Link>
-
         <div className={Style.title}>お気に入り</div>
+
         <div className={Style.block}>
-          <button className={Style.button} > Ray Charls </button>
-          <button className={Style.button} > Mickel Jackson </button>
-          <button className={Style.button} > billy joel </button>
-          <button className={Style.button} > ITOSHIN TV </button>
-          <button className={Style.button} > 将棋の森 </button>
-          <button className={Style.button} > jackson 5 </button>
-          <button className={Style.button} > data science bowl </button>
-          <button className={Style.button} > Bird Watch TV </button>
-          <button className={Style.button} > animal planet </button>
-          <button className={Style.button} > friends </button>
-          <button className={Style.button} > つんく </button>
-          <button className={Style.button} > britony spears </button>
-          <button className={Style.button} > amazon prime </button>
+          {userRelations.map(userRelations=>LinkButtonToFollowintUser(
+            userRelations.followee
+          ))}
         </div>
+
         <div className={Style.logout}>
           <LogoutControl/>
         </div>

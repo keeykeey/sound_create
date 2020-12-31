@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
+import {useParams} from 'react-router-dom'
 import AuthService from '../../services/auth.service'
 import Style from './MainContents.module.scss'
 import axios from 'axios';
+import endPoint from '../../services/endPoint';
 
-const DRFPOSTSONG_API_URL = 'http://localhost:8000/drfPostSong/'
-
-const DRFCUSTOMUSER_API_URL = 'http://localhost:8000/user/drfcustomuser/'
-const JWT_API_URL = 'http://localhost:8000/api/auth/jwt/';
-const TOKEN = 'Token 686f3dcae81cfe82ec6c84fc8f2ab0a953a9fd05'
+const DRFPOSTSONG_API_URL = endPoint.getPostSongUrl()
+const DRFCUSTOMUSER_API_URL = endPoint.getCustomUserUrl()
+const JWT_API_URL = endPoint.getJwtUrl()
 
 const SongGridItemForPublic = (
   artist_name,
@@ -48,7 +48,6 @@ const getUserNameFromUserId=(user_id)=>{
 
 const Public = (props) => {
   const [song,setSong] = useState([])
-  const [username,setUsername] = useState([])
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL)
@@ -73,10 +72,7 @@ const Public = (props) => {
       </div>
     </div>
   )
-
 }
-
-
 
 const Uprising = (props) => {
   return(
@@ -99,8 +95,7 @@ const Mypage = (props) => {
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL)
-  //.then(res=>console.log('here we are :',res.data))
-  .then(res=>{setSong(res.data.filter(key=>key.user_id==2))})
+  .then(res=>{setSong(res.data.filter(key=>key.user_id==props.loginId))})
   },[]);
 
   return(
@@ -133,6 +128,54 @@ const MysongDetail = (props) => {
   )
 }
 
+const FollowingUsersPage = (props) =>{
+  const [song,setSong]=useState([]);
+  const {followeeId} = useParams();
+
+  useEffect(()=>{
+    axios.get(DRFPOSTSONG_API_URL)
+    .then(res=>{setSong(res.data.filter(key=>key.user_id==followeeId))})
+  },[followeeId]
+  );
+
+  return (
+    <div>
+      <h3> Following User{followeeId}'s Page </h3>
+      <hr/>
+      <ul>
+        {song.map(
+          song=>SongGridItemForPrivate(
+            song.artist_name,
+            song.song_title,
+            song.audio_file,
+          ))}
+      </ul>
+    </div>
+  );
+}
+
+const FollowingUsersPageTry = (props) =>{
+  const [song,setSong]=useState([]);
+  const {followeeId} = useParams();
+
+  return (
+    <div>
+      <h3> Following User{followeeId}'s Page </h3>
+      <hr/>
+      <h3> another print {followeeId} displayed?</h3>
+      <ul>
+        {song.map(
+          song=>SongGridItemForPrivate(
+            song.artist_name,
+            song.song_title,
+            song.audio_file,
+          ))}
+      </ul>
+    </div>
+  );
+}
+
+
 const MainContents = {
   SongGridItemForPublic,
   SongGridItemForPrivate,
@@ -141,6 +184,8 @@ const MainContents = {
   Famous,
   Mypage,
   MysongDetail,
+  FollowingUsersPage,
+  FollowingUsersPageTry,
 };
 
 export default MainContents
