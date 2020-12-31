@@ -15,16 +15,16 @@
   margin:0 auto 0 1%;
 }
 
-.artistName{
+.userName{
   font-size:0.9rem;
   font-weight:bold;
   margin:0 auto 0 2%;
   color:#303530;
 }
 
-.userName{
-  font-size:0.9rem;
-  font-weight:bold;
-  margin:0 auto 0 2%;
-  color:#303530;
+.like{
+}
+
+.like:hover{
+  background-color:#ffcc55;
 }
