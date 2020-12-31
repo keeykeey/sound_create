@@ -2,14 +2,14 @@ import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import Style from './Sidebar.module.scss'
 import LogoutControl from '../Logout/LogoutControl'
-import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
+import {Link} from "react-router-dom";
 import endPoint from '../../services/endPoint';
 
 const LinkButtonToFollowintUser = (
   followeeId
 )=>{
   return(
-    <Link to={'/follow/'+followeeId}>
+    <Link to={'/favorite/'+followeeId} key={followeeId.toString()}>
       <button className={Style.button} > {followeeId} </button>
     </Link>
 )}
@@ -20,9 +20,9 @@ const Sidebar = (props) => {
   useEffect(() =>{
     axios.get(DRFUSERRELATION_API_URL).then(
       res=>{
-        setUserRelations(res.data.filter(key=>key.follower==props.loginId))
+        setUserRelations(res.data.filter(key=>String(key.follower)===String(props.loginId)))
       })
-  },[])
+  },[DRFUSERRELATION_API_URL,props.loginId])
 
   return(
       <div>

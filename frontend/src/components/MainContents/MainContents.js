@@ -1,13 +1,11 @@
 import React, { useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom'
-import AuthService from '../../services/auth.service'
 import Style from './MainContents.module.scss'
 import axios from 'axios';
 import endPoint from '../../services/endPoint';
 
 const DRFPOSTSONG_API_URL = endPoint.getPostSongUrl()
 const DRFCUSTOMUSER_API_URL = endPoint.getCustomUserUrl()
-const JWT_API_URL = endPoint.getJwtUrl()
 
 const SongGridItemForPublic = (
   artist_name,
@@ -17,10 +15,10 @@ const SongGridItemForPublic = (
 )=>{
   return(
   <div className={Style.eachSongBlock}>
-    <div className={Style.songTitle}>{song_title} </div>
-    <audio className={Style.audio} src={audio_file} controls/>
-    <div className={Style.artistName}>{artist_name}</div>
-    <div className={Style.userName}>user_name : {getUserNameFromUserId(user_id)}</div>
+    <div className={Style.songTitle} >{song_title} </div>
+    <audio className={Style.audio} src={String(audio_file)} controls/>
+    <div className={Style.artistName} >{artist_name}</div>
+    <div className={Style.userName} >user_name : {getUserNameFromUserId(user_id)}</div>
   </div>)
 }
 
@@ -40,10 +38,10 @@ const SongGridItemForPrivate = (
 const getUserNameFromUserId=(user_id)=>{
   const promiseObj = axios.get(DRFCUSTOMUSER_API_URL).then(
     res => {
-        res=res.data.filter(key=>key.id==user_id)[0]['username']
+        res=res.data.filter(key=>key.id===user_id)[0]['username']
     }
   )
-  return('username : ' + String(user_id))
+  return('username : ' + String(user_id)+'...'+String(promiseObj))
 }
 
 const Public = (props) => {
@@ -95,8 +93,8 @@ const Mypage = (props) => {
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL)
-  .then(res=>{setSong(res.data.filter(key=>key.user_id==props.loginId))})
-  },[]);
+  .then(res=>{setSong(res.data.filter(key=>String(key.user_id)===String(props.loginId)))})
+},[props.loginId]);
 
   return(
     <div>
@@ -130,11 +128,11 @@ const MysongDetail = (props) => {
 
 const FollowingUsersPage = (props) =>{
   const [song,setSong]=useState([]);
-  const {followeeId} = useParams();
+  const {followeeId} =useParams();
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL)
-    .then(res=>{setSong(res.data.filter(key=>key.user_id==followeeId))})
+    .then(res=>{setSong(res.data.filter(key=>String(key.user_id)===String(followeeId)))})
   },[followeeId]
   );
 
@@ -154,28 +152,6 @@ const FollowingUsersPage = (props) =>{
   );
 }
 
-const FollowingUsersPageTry = (props) =>{
-  const [song,setSong]=useState([]);
-  const {followeeId} = useParams();
-
-  return (
-    <div>
-      <h3> Following User{followeeId}'s Page </h3>
-      <hr/>
-      <h3> another print {followeeId} displayed?</h3>
-      <ul>
-        {song.map(
-          song=>SongGridItemForPrivate(
-            song.artist_name,
-            song.song_title,
-            song.audio_file,
-          ))}
-      </ul>
-    </div>
-  );
-}
-
-
 const MainContents = {
   SongGridItemForPublic,
   SongGridItemForPrivate,
@@ -185,7 +161,6 @@ const MainContents = {
   Mypage,
   MysongDetail,
   FollowingUsersPage,
-  FollowingUsersPageTry,
 };
 
 export default MainContents

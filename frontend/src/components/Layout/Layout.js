@@ -1,19 +1,15 @@
-import React, {useState,useEffect} from 'react'
+import React from 'react'
 import Style from './Layout.module.scss'
 import Header from '../Header/Header'
 import Sidebar from '../Sidebar/Sidebar'
 import MainContents from '../MainContents/MainContents'
 import Login from '../../pages/Login'
-import AuthInsideLayout from './AuthInsideLayout'
-import endPoint from '../../services/endPoint';
-import { HashRouter as Router, Route, Switch ,useParams} from 'react-router-dom'
-import Auth from '../../pages/Auth'
+import { HashRouter as Router, Route, Switch} from 'react-router-dom'
 
 const loginName = localStorage.getItem('username');
 const loginId = localStorage.getItem('user_id');
 
 const HomeLayout = (props)=>{
-  const followeeId = useParams();
   return(
     <div>
       <div>
@@ -38,7 +34,7 @@ const HomeLayout = (props)=>{
               <Route exact path={'/mypage/'+loginName}>
                 <MainContents.Mypage loginName={loginName} loginId={loginId}/>
               </Route>
-              <Route exact path='/follow/:followeeId' children={<MainContents.FollowingUsersPage />}/>
+              <Route exact path='/favorite/:followeeId' children={<MainContents.FollowingUsersPage />}/>
               <Route component = {MainContents.Public}/>
             </Switch>
           </div>

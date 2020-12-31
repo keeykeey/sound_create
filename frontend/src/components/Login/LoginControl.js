@@ -2,7 +2,6 @@ import React, {useState,useRef} from 'react'
 import Style from './LoginControl.module.scss'
 import AuthService from '../../services/auth.service.js'
 import Form from 'react-validation/build/form'
-import Input from 'react-validation/build/input'
 import {withRouter} from 'react-router-dom';//to enable props.history.push
 
 const required = (value) => {
