@@ -23,6 +23,7 @@ class PostedSong(models.Model):
     )
     tag = models.CharField(max_length=50)
     audio_file = models.FileField(default='', upload_to='audio/')
+    posted_day = models.DateTimeField(default=timezone.datetime.today())
     like_casted_user = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         verbose_name='users who casted like on the song',
@@ -38,3 +39,6 @@ class Likes(models.Model):
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='songs_which_user_likes')
     like_casted_day = models.DateTimeField(default=timezone.datetime.today())
     like_casted_time = models.DateTimeField(default=timezone.datetime.now())
+
+    class Meta:
+        unique_together=('song_id','user_id')

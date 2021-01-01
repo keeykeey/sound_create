@@ -5,7 +5,7 @@ from .views import CustomUserViewSet,UserRelationsViewSet
 
 router = routers.DefaultRouter()
 router.register('drfcustomuser',CustomUserViewSet)
-router.register('drfuserrelaions',UserRelationsViewSet)
+router.register('drfuserrelations',UserRelationsViewSet)
 
 urlpatterns = [
     path('',include(router.urls)),
