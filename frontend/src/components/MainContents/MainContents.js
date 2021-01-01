@@ -8,6 +8,18 @@ const DRFPOSTSONG_API_URL = endPoint.getPostSongUrl()
 const DRFLIKES_API_URL = endPoint.getLikesUrl()
 const DRFCUSTOMUSER_API_URL = endPoint.getCustomUserUrl()
 
+const pushFollowIcon = ()=>{
+
+}
+
+
+
+
+
+
+
+
+
 const pushLikesIcon = (song_id,user_id) =>{
   const likeIcon = document.querySelector(
     '#likeOf'+String(song_id)+'and'+String(user_id)
@@ -52,7 +64,7 @@ const SongGridItemForPublic = (
   song_title,
   audio_file,
   user_name,
-  user_id,
+  login_user_id,
   song_id,
   likes_count,
 )=>{
@@ -61,8 +73,8 @@ const SongGridItemForPublic = (
     <div className={Style.songTitle} >{song_title} </div>
     <audio className={Style.audio} src={String(audio_file)} controls/>
     <div className={Style.userName} >user_name : {user_name}</div>
-    <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,user_id,e)} >
-      <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+user_id}>{likes_count}</i>
+    <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
+      <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
     </button>
   </div>)
 }
@@ -70,7 +82,7 @@ const SongGridItemForPublic = (
 const SongGridItemForPrivate = (
   song_title,
   audio_file,
-  user_id,
+  login_user_id,
   song_id,
   likes_count,
 )=>{
@@ -79,8 +91,8 @@ const SongGridItemForPrivate = (
       <div className={Style.songTitle}>{song_title} </div>
       <audio className={Style.audio} src={String(audio_file)} controls/>
       <div>
-        <button className={Style.like} onClick={(e)=>pushLikesIcon(song_id,user_id,e)} >
-          <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+user_id}>{likes_count}</i>
+        <button className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
+          <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
         </button>
       </div>
     </div>)
@@ -111,7 +123,7 @@ const Public = (props) => {
           song.song_title,
           song.audio_file,
           song.user_id.username,
-          song.user_id.id,
+          props.loginId,
           song.song_id,
           like.filter(key=>String(key.song_id)===String(song.song_id)).length,
         ))}
@@ -167,7 +179,7 @@ useEffect(()=>{
           song => SongGridItemForPrivate(
             song.song_title,
             song.audio_file,
-            song.user_id.id,
+            props.loginId,
             song.song_id,
             like.filter(key=>String(key.song_id)===String(song.song_id)).length,
           )
@@ -212,7 +224,7 @@ const FollowingUsersPage = (props) =>{
             song.song_title,
             song.audio_file,
             song.user_id.username,
-            song.user_id.id,
+            props.loginId,
             song.song_id,
             likes.filter(key=>String(key.song_id)===String(song.song_id)).length
           ))}
