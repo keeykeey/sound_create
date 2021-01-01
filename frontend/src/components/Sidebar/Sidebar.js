@@ -9,15 +9,12 @@ const Sidebar = (props) => {
   const DRFUSERRELATION_API_URL = endPoint.getUserRelationUrl()
   const [userRelations,setUserRelations] = useState([])
   useEffect(() =>{
-    axios.get(DRFUSERRELATION_API_URL).then(
+    axios.get(DRFUSERRELATION_API_URL+'?follower='+String(props.loginId)).then(
       res=>{
-        setUserRelations(res.data.filter(key=>String(key.follower.id)===String(props.loginId)))
+        //setUserRelations(res.data.filter(key=>String(key.follower.id)===String(props.loginId)))
+        setUserRelations(res.data)
       })
   },[DRFUSERRELATION_API_URL,props.loginId])
-
-  const DRFCUSTOMUSER_API_URL=endPoint.getCustomUserUrl()
-  const[followeeNameOnBtn,setFolloweeNameOnBtn]=useState([])
-  const [error,setError] = useState([])
 
   return(
       <div>
