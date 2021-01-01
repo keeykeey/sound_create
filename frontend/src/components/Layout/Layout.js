@@ -34,7 +34,7 @@ const HomeLayout = (props)=>{
               <Route exact path={'/mypage/'+loginName}>
                 <MainContents.Mypage loginName={loginName} loginId={loginId}/>
               </Route>
-              <Route exact path='/favorite/:followeeId' children={<MainContents.FollowingUsersPage />}/>
+              <Route exact path='/favorite/:followeeName' children={<MainContents.FollowingUsersPage />}/>
               <Route component = {MainContents.Public}/>
             </Switch>
           </div>

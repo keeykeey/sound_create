@@ -5,24 +5,19 @@ import LogoutControl from '../Logout/LogoutControl'
 import {Link} from "react-router-dom";
 import endPoint from '../../services/endPoint';
 
-const LinkButtonToFollowintUser = (
-  followeeId
-)=>{
-  return(
-    <Link to={'/favorite/'+followeeId} key={followeeId.toString()}>
-      <button className={Style.button} > {followeeId} </button>
-    </Link>
-)}
-
 const Sidebar = (props) => {
   const DRFUSERRELATION_API_URL = endPoint.getUserRelationUrl()
   const [userRelations,setUserRelations] = useState([])
   useEffect(() =>{
     axios.get(DRFUSERRELATION_API_URL).then(
       res=>{
-        setUserRelations(res.data.filter(key=>String(key.follower)===String(props.loginId)))
+        setUserRelations(res.data.filter(key=>String(key.follower.id)===String(props.loginId)))
       })
   },[DRFUSERRELATION_API_URL,props.loginId])
+
+  const DRFCUSTOMUSER_API_URL=endPoint.getCustomUserUrl()
+  const[followeeNameOnBtn,setFolloweeNameOnBtn]=useState([])
+  const [error,setError] = useState([])
 
   return(
       <div>
@@ -42,8 +37,8 @@ const Sidebar = (props) => {
         <div className={Style.title}>お気に入り</div>
 
         <div className={Style.block}>
-          {userRelations.map(userRelations=>LinkButtonToFollowintUser(
-            userRelations.followee
+          {userRelations.map(userRelations=>LinkButtonToFollowingUser(
+            userRelations.followee.username
           ))}
         </div>
 
@@ -53,5 +48,14 @@ const Sidebar = (props) => {
       </div>
   )
 }
+
+const LinkButtonToFollowingUser = (
+  followeeNameOnBtn
+)=>{
+  return(
+    <Link to={'/favorite/'+followeeNameOnBtn} key={followeeNameOnBtn.toString()}>
+      <button className={Style.button} > {followeeNameOnBtn} </button>
+    </Link>
+)}
 
 export default Sidebar;

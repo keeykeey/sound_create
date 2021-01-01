@@ -51,6 +51,7 @@ const subtractLikeNumInDb = (song_id,user_id) => {
 const SongGridItemForPublic = (
   song_title,
   audio_file,
+  user_name,
   user_id,
   song_id,
   likes_count,
@@ -59,7 +60,7 @@ const SongGridItemForPublic = (
   <div className={Style.eachSongBlock}>
     <div className={Style.songTitle} >{song_title} </div>
     <audio className={Style.audio} src={String(audio_file)} controls/>
-    <div className={Style.userName} >user_name : {getUserNameFromUserId(user_id)}</div>
+    <div className={Style.userName} >user_name : {user_name}</div>
     <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,user_id,e)} >
       <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+user_id}>{likes_count}</i>
     </button>
@@ -76,22 +77,13 @@ const SongGridItemForPrivate = (
   return(
     <div className={Style.eachSongBlock}>
       <div className={Style.songTitle}>{song_title} </div>
-      <audio className={Style.audio} src={audio_file} controls/>
+      <audio className={Style.audio} src={String(audio_file)} controls/>
       <div>
         <button className={Style.like} onClick={(e)=>pushLikesIcon(song_id,user_id,e)} >
           <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+user_id}>{likes_count}</i>
         </button>
       </div>
     </div>)
-}
-
-const getUserNameFromUserId=(user_id)=>{
-  const promiseObj = axios.get(DRFCUSTOMUSER_API_URL).then(
-    res => {
-        res=res.data.filter(key=>key.id===user_id)[0]['username']
-    }
-  )
-  return('username : ' + String(user_id)+'...'+String(promiseObj))
 }
 
 const Public = (props) => {
@@ -118,7 +110,8 @@ const Public = (props) => {
         {song.map(song => SongGridItemForPublic(
           song.song_title,
           song.audio_file,
-          song.user_id,
+          song.user_id.username,
+          song.user_id.id,
           song.song_id,
           like.filter(key=>String(key.song_id)===String(song.song_id)).length,
         ))}
@@ -155,7 +148,7 @@ const Mypage = (props) => {
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL)
-  .then(res=>{setSong(res.data.filter(key=>String(key.user_id)===String(props.loginId)))})
+  .then(res=>{setSong(res.data.filter(key=>String(key.user_id.id)===String(props.loginId)))})
 },[props.loginId]);
 
 useEffect(()=>{
@@ -174,7 +167,7 @@ useEffect(()=>{
           song => SongGridItemForPrivate(
             song.song_title,
             song.audio_file,
-            song.user_id,
+            song.user_id.id,
             song.song_id,
             like.filter(key=>String(key.song_id)===String(song.song_id)).length,
           )
@@ -194,15 +187,14 @@ const MysongDetail = (props) => {
 }
 
 const FollowingUsersPage = (props) =>{
-  const {followeeId} =useParams();
-
+  const {followeeName} =useParams();
   const [song,setSong]=useState([]);
   const [likes,setLikes] = useState([])
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL)
-    .then(res=>{setSong(res.data.filter(key=>String(key.user_id)===String(followeeId)))})
-  },[followeeId]
+    .then(res=>{setSong(res.data.filter(key=>String(key.user_id.username)===String(followeeName)))})
+  },[followeeName]
   );
 
   useEffect(()=>{
@@ -212,14 +204,15 @@ const FollowingUsersPage = (props) =>{
 
   return (
     <div>
-      <h3> Following User{followeeId}'s Page </h3>
+      <h3> {followeeName}'s Page </h3>
       <hr/>
       <ul>
         {song.map(
           song=>SongGridItemForPublic(
             song.song_title,
             song.audio_file,
-            song.user_id,
+            song.user_id.username,
+            song.user_id.id,
             song.song_id,
             likes.filter(key=>String(key.song_id)===String(song.song_id)).length
           ))}
