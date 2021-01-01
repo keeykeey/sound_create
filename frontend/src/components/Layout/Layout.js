@@ -23,19 +23,21 @@ const HomeLayout = (props)=>{
           <div className={Style.rightSide}>
             <Switch>
               <Route exact path='/uprising/'>
-                <MainContents.Uprising/>
+                <MainContents.Uprising loginName={loginName} loginId={loginId}/>
               </Route>
               <Route exact path='/famous/'>
-                <MainContents.Famous/>
+                <MainContents.Famous loginName={loginName} loginId={loginId}/>
               </Route>
               <Route exact path='/login/'>
-                <Login/>
+                <Login loginName={loginName} loginId={loginId}/>
               </Route>
               <Route exact path={'/mypage/'+loginName}>
                 <MainContents.Mypage loginName={loginName} loginId={loginId}/>
               </Route>
               <Route exact path='/favorite/:followeeName' children={<MainContents.FollowingUsersPage />}/>
-              <Route component = {MainContents.Public}/>
+              <Route>
+                <MainContents.Public loginName={loginName} loginId={loginId}/>
+              </Route>
             </Switch>
           </div>
         </Router>
