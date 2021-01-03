@@ -1,24 +1,47 @@
 import React, { useState, useEffect} from 'react';
-import {useParams} from 'react-router-dom'
-import Style from './MainContents.module.scss'
+import {useParams} from 'react-router-dom';
+import Style from './MainContents.module.scss';
+import {Link} from 'react-router-dom';
 import axios from 'axios';
 import endPoint from '../../services/endPoint';
 
-const DRFPOSTSONG_API_URL = endPoint.getPostSongUrl()
-const DRFLIKES_API_URL = endPoint.getLikesUrl()
 const DRFCUSTOMUSER_API_URL = endPoint.getCustomUserUrl()
+const DRFPOSTSONG_API_URL_FORVIEW = endPoint.getPostSongUrlForView()
+const DRFLIKES_API_URL = endPoint.getLikesUrl()
+const DRFUSERRELATION_API_URL = endPoint.getUserRelationUrl()
+const DRFUSERRELATION_API_URL_FORVIEW = endPoint.getUserRelationUrlForView()//add
 
-const pushFollowIcon = ()=>{
+const pushFavoriteButton = (followerId,followeeId)=>{
+  const favoriteButton = document.querySelector(
+    '#favoriteOf'+String(followerId)+'and'+String(followeeId)
+  )
+  return(
+    axios.post(DRFUSERRELATION_API_URL,{
+      'follower':followerId,
+      'followee':followeeId,
+    }).then(
+      function(error){
+        if(!error.response){
+          console.log('success')
+          favoriteButton.innerHTML = '登録解除'
+          favoriteButton.style.backgroundColor='#c0c0c0'
+        }
+    }).catch(
+      function(error){
+        if(error.response){
+          console.log('error',error.response)
+          favoriteButton.innerHTML = 'チャンネル登録'
+          favoriteButton.style.backgroundColor='#de0000'
+          cancelFavoriteButton(followerId,followeeId)
+        }})
+  ),[followerId,followeeId]}
 
+const cancelFavoriteButton = (followerId,followeeId)=>{
+  const promiseOnj=axios.get(
+    DRFUSERRELATION_API_URL+'?followee='+followeeId)
+    .then(res=>res=res.data.filter(key=>String(key.follower)===String(followerId))[0]['id'])
+    .then(res=>axios.delete(DRFUSERRELATION_API_URL + String(res)))
 }
-
-
-
-
-
-
-
-
 
 const pushLikesIcon = (song_id,user_id) =>{
   const likeIcon = document.querySelector(
@@ -60,24 +83,51 @@ const subtractLikeNumInDb = (song_id,user_id) => {
     })
 }
 
+const PutChannelRegisterButton = (isFollowing,loginId,followeeId) => {
+  if(isFollowing){
+    return(
+      <button className={Style.stopRegisteringChannel}
+        onClick={(e)=>pushFavoriteButton(loginId,followeeId,e)}
+        id = {'favoriteOf'+String(loginId)+'and'+String(followeeId)}>
+        登録解除
+      </button>
+    )
+  }else if(!isFollowing){
+    return(
+      <button className={Style.registerChannel}
+        onClick={(e)=>pushFavoriteButton(loginId,followeeId,e)}
+        id = {'favoriteOf'+String(loginId)+'and'+String(followeeId)}>
+        チャンネル登録
+      </button>
+    )
+  }
+}
+
 const SongGridItemForPublic = (
   song_title,
   audio_file,
   user_name,
+  followeeId,
   login_user_id,
   song_id,
   likes_count,
 )=>{
   return(
   <div className={Style.eachSongBlock}>
-    <div className={Style.songTitle} >{song_title} </div>
-    <audio className={Style.audio} src={String(audio_file)} controls/>
-    <div className={Style.userName} >user_name : {user_name}</div>
-    <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
-      <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
-    </button>
-  </div>)
-}
+    <div className={Style.item}>
+      <div className={Style.songTitle} >{song_title} </div>
+      <audio className={Style.audio} src={String(audio_file)} controls/>
+      <div className={Style.userName} >
+        user_name : {user_name}
+      </div>
+      <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
+        <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
+      </button>
+    </div>
+    <div className={Style.item}>
+    </div>
+  </div>
+)}
 
 const SongGridItemForPrivate = (
   song_title,
@@ -88,14 +138,62 @@ const SongGridItemForPrivate = (
 )=>{
   return(
     <div className={Style.eachSongBlock}>
-      <div className={Style.songTitle}>{song_title} </div>
-      <audio className={Style.audio} src={String(audio_file)} controls/>
-      <div>
-        <button className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
+      <div className={Style.item}>
+        <div className={Style.songTitle} >{song_title} </div>
+        <audio className={Style.audio} src={String(audio_file)} controls/>
+        <br/>
+        <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
           <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
         </button>
       </div>
+      <div className={Style.item}>
+      </div>
     </div>)
+}
+
+const ChannelRegisterButton = (loginId,followeeId) => {
+//  const [userRelations,setUserRelations] = useState([])
+  const [isFollowing,setIsFollowing] = useState(false)
+
+  useEffect(()=>{
+    axios.get(DRFUSERRELATION_API_URL + '?follower='+ String(loginId))
+    .then(
+      res=>{
+        console.log('status',res.data);
+        console.log(
+          '3...',
+          String(res.data.filter
+            (key=>(String(key.followee))===(String(followeeId)))[0].followee)===String(followeeId)
+          );
+        setIsFollowing(
+          String(res.data.filter
+            (key=>(String(key.followee))===(String(followeeId)))[0].followee)===String(followeeId)
+          )
+        }
+    ).catch(
+      error=>console.log('error...',error)
+    )
+  },[loginId,followeeId])
+
+  console.log('2...isFollowing',isFollowing)
+
+  if(isFollowing){
+    return(
+      <button className={Style.stopRegisteringChannel}
+        onClick={(e)=>pushFavoriteButton(loginId,followeeId,e)}
+        id = {'favoriteOf'+String(loginId)+'and'+String(followeeId)}>
+        登録解除
+      </button>
+    )
+  }else if(!isFollowing){
+    return(
+      <button className={Style.registerChannel}
+        onClick={(e)=>pushFavoriteButton(loginId,followeeId,e)}
+        id = {'favoriteOf'+String(loginId)+'and'+String(followeeId)}>
+        チャンネル登録
+      </button>
+    )
+  }
 }
 
 const Public = (props) => {
@@ -103,7 +201,7 @@ const Public = (props) => {
   const [like,setLike] = useState([])
 
   useEffect(()=>{
-    axios.get(DRFPOSTSONG_API_URL)
+    axios.get(DRFPOSTSONG_API_URL_FORVIEW)
     .then(res=>{setSong(res.data)})
   },[]);
 
@@ -119,37 +217,80 @@ const Public = (props) => {
       </h3>
       <hr/>
       <ul>
-        {song.map(song => SongGridItemForPublic(
-          song.song_title,
-          song.audio_file,
-          song.user_id.username,
-          props.loginId,
-          song.song_id,
-          like.filter(key=>String(key.song_id)===String(song.song_id)).length,
+        {song.map(
+          song => SongGridItemForPublic(
+            song.song_title,
+            song.audio_file,
+            song.user_id.username,
+            song.user_id.id,
+            props.loginId,
+            song.song_id,
+            like.filter(key=>String(key.song_id)===String(song.song_id)).length,
         ))}
       </ul>
     </div>
   )
 }
 
-const Uprising = (props) => {
+const SortByUser = (props) => {
   return(
     <div>
       <h3>
-        Uprising
+        Sort by Genre
       </h3>
       <hr/>
+      <ul>
+      </ul>
+      <h3>test</h3><hr/>
+      <ul>
+      </ul>
     </div>
   )
 }
 
-const Famous = (props) => {
+const SortByGenre = (props) => {
+  const [song,setSong] = useState([])
+  const [like,setLike] = useState([])
+  const [userRelations,setUserRelations] = useState([])//add
+
+  useEffect(()=>{
+    axios.get(DRFPOSTSONG_API_URL_FORVIEW)
+    .then(res=>{setSong(res.data)})
+  },[props.loginId]);
+
+  useEffect(()=>{
+    axios.get(DRFLIKES_API_URL)
+    .then(res=>{setLike(res.data)})
+  },[props.loginId]);
+
+  useEffect(()=>{
+    axios.get(DRFUSERRELATION_API_URL_FORVIEW + '?follower='+ String(props.loginId))
+    .then(
+      res=>setUserRelations(res.data)
+    ).catch(
+      error=>console.log('error...',error)
+    )
+  },[props.loginId])
+
   return(
     <div>
       <h3>
-        Famous
+        Sort by Genre
       </h3>
       <hr/>
+      <ul>
+        {userRelations.map(
+          userRelations=>(
+            <div>
+              <li>{userRelations.followee.username}</li>
+              <div>length...:{String(userRelations.followee.username)}</div>
+            </div>
+          ))}
+      </ul>
+      <h3>test</h3><hr/>
+      <ul>
+        {ChannelRegisterButton(props.loginId,6)}
+      </ul>
     </div>
   )
 }
@@ -159,7 +300,7 @@ const Mypage = (props) => {
   const [like,setLike] = useState([])
 
   useEffect(()=>{
-    axios.get(DRFPOSTSONG_API_URL)
+    axios.get(DRFPOSTSONG_API_URL_FORVIEW)
   .then(res=>{setSong(res.data.filter(key=>String(key.user_id.id)===String(props.loginId)))})
 },[props.loginId]);
 
@@ -171,8 +312,11 @@ useEffect(()=>{
   return(
     <div>
       <h3>
-        {props.loginName}'s page
+        You're Posts
       </h3>
+      <Link to={'/mypage/'+props.loginName+'/mypost'}>
+        <button>曲をアップロード</button>
+      </Link>
       <hr/>
       <ul>
         {song.map(
@@ -198,13 +342,15 @@ const MysongDetail = (props) => {
   )
 }
 
-const FollowingUsersPage = (props) =>{
+const EachUsersPage = (props) =>{
   const {followeeName} =useParams();
   const [song,setSong]=useState([]);
-  const [likes,setLikes] = useState([])
+  const [likes,setLikes] = useState([]);
+  const [isFollowing,setIsFollowing] = useState(false)
+  const [followeeId,setFolloweeId] = useState([])
 
   useEffect(()=>{
-    axios.get(DRFPOSTSONG_API_URL)
+    axios.get(DRFPOSTSONG_API_URL_FORVIEW)
     .then(res=>{setSong(res.data.filter(key=>String(key.user_id.username)===String(followeeName)))})
   },[followeeName]
   );
@@ -214,9 +360,43 @@ const FollowingUsersPage = (props) =>{
     .then(res=>{setLikes(res.data)})
   },[]);
 
+  useEffect(()=>{
+    axios.get(DRFUSERRELATION_API_URL_FORVIEW + '?follower='+ String(props.loginId))
+    .then(
+      res=>{
+        console.log('status',res.data);
+        console.log(
+          '3...',
+          String(res.data.filter
+            (key=>(String(key.followee.username))===(String(followeeName)))[0].followee.username)===String(followeeName)
+          );
+        setIsFollowing(
+          String(res.data.filter
+            (key=>(String(key.followee.username))===(String(followeeName)))[0].followee.username)===String(followeeName)
+          );
+      }
+    ).catch(
+      error=>console.log('error...',error)
+    )
+  },[props.loginId,followeeName]);
+
+  useEffect(()=>{
+    axios.get(DRFCUSTOMUSER_API_URL+'?username='+String(followeeName))
+    .then(res=>{
+      console.log('res......',res.data[0].id)
+      setFolloweeId(res.data[0].id)
+    })
+    .catch(error=>console.log('error...',error))
+  },[props.loginId,followeeName])
+
+  console.log('boolean',isFollowing)
+  console.log('loginId',props.loginId)
+  console.log('followeeId',followeeId)
+
   return (
     <div>
-      <h3> {followeeName}'s Page </h3>
+      <h3> {followeeName} </h3>
+      <div>{PutChannelRegisterButton(isFollowing,props.loginId,followeeId)}</div>
       <hr/>
       <ul>
         {song.map(
@@ -226,7 +406,7 @@ const FollowingUsersPage = (props) =>{
             song.user_id.username,
             props.loginId,
             song.song_id,
-            likes.filter(key=>String(key.song_id)===String(song.song_id)).length
+            likes.filter(key=>String(key.song_id)===String(song.song_id)).length,
           ))}
       </ul>
     </div>
@@ -237,11 +417,11 @@ const MainContents = {
   SongGridItemForPublic,
   SongGridItemForPrivate,
   Public,
-  Uprising,
-  Famous,
+  SortByUser,
+  SortByGenre,
   Mypage,
   MysongDetail,
-  FollowingUsersPage,
+  EachUsersPage,
 };
 
 export default MainContents

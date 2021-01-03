@@ -1,7 +1,16 @@
 .eachSongBlock{
   margin :15px 15px 15px 15px;
   background-color:#ffffff;
-}
+  display:flex;
+  flex-direction:row;
+  .item{
+    &:first-child{
+      flex-grow:1;
+    }
+    &:last-child{
+      flex-grow:3;
+  }
+}}
 
 .songTitle{
   font-size:1.2rem;
@@ -11,7 +20,7 @@
 
 .audio{
   height:30px;
-  width:40%;
+  width:350px;
   margin:0 auto 0 1%;
 }
 
@@ -22,7 +31,26 @@
   color:#303530;
 }
 
-.like{
+.registerChannel{
+  margin:25px auto auto 0;
+  width:130px;
+  height:40px;
+  font-size:0.9rem;
+  font-weight:bold;
+  background-color:#de0000;
+  color:#ececec;
+  border:none;
+}
+
+.stopRegisteringChannel{
+  margin:25px auto auto 0;
+  width:130px;
+  height:40px;
+  font-size:0.9rem;
+  font-weight:bold;
+  background-color:#c0c0c0;
+  color:#ececec;
+  border:none;
 }
 
 .like:hover{
