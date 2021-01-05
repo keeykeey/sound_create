@@ -1,14 +1,15 @@
 .eachSongBlock{
-  margin :15px 15px 15px 15px;
+  margin :15px 15px 15px 0px;
   background-color:#ffffff;
   display:flex;
   flex-direction:row;
   .item{
     &:first-child{
-      flex-grow:1;
+      width:350px;
+      background-color: #ffffff;
     }
     &:last-child{
-      flex-grow:3;
+      text-align:center;
   }
 }}
 
@@ -20,7 +21,7 @@
 
 .audio{
   height:30px;
-  width:350px;
+  width:340px;
   margin:0 auto 0 1%;
 }
 
@@ -32,7 +33,7 @@
 }
 
 .registerChannel{
-  margin:25px auto auto 0;
+  margin:0px auto auto 10px;
   width:130px;
   height:40px;
   font-size:0.9rem;
@@ -40,10 +41,11 @@
   background-color:#de0000;
   color:#ececec;
   border:none;
+  cursor:pointer;
 }
 
 .stopRegisteringChannel{
-  margin:25px auto auto 0;
+  margin:0px auto auto 10px;
   width:130px;
   height:40px;
   font-size:0.9rem;
@@ -51,8 +53,40 @@
   background-color:#c0c0c0;
   color:#ececec;
   border:none;
+  cursor:pointer;
+}
+
+.like{
+  cursor:pointer;
 }
 
 .like:hover{
+  background-color:#ffcc55;
+}
+
+.linkToUploadSong{
+  margin:0px auto auto 10px;
+  width:130px;
+  height:40px;
+  font-size:0.9rem;
+  font-weight:bold;
+  background-color:#00cc55;
+  color:#303530;
+  cursor:pointer;
+}
+
+.linkToEachUsersPage{
+  margin:0px 0px auto auto;
+  width:200px;
+  height:30px;
+  font-size:0.9rem;
+  font-weight:bold;
+  background-color:#eeeeee;
+  color:#303530;
+  border:none;
+  cursor:pointer;
+}
+
+.linkToEachUsersPage:hover{
   background-color:#ffcc55;
 }
