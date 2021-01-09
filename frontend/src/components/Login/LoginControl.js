@@ -1,6 +1,7 @@
 import React, {useState,useRef} from 'react'
 import Style from './LoginControl.module.scss'
 import AuthService from '../../services/auth.service.js'
+import Input from 'react-validation/build/input'
 import Form from 'react-validation/build/form'
 import {withRouter} from 'react-router-dom';//to enable props.history.push
 
@@ -79,7 +80,7 @@ const LoginControl = (props) => {
         <Form onSubmit={handleLogin} ref={form}>
           <div className={Style.locate_center}>
           <label>
-            <input
+            <Input
               className={Style.form_content}
               type='text'
               onChange={onChangeUsername}
@@ -87,7 +88,7 @@ const LoginControl = (props) => {
               name='username'
               placeholder='username'
             />
-            <input
+            <Input
               className={Style.form_content}
               type='password'
               onChange={onChangePassword}

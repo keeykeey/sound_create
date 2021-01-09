@@ -13,14 +13,14 @@ const LogoutControl = (props) => {
   }
 
   return(
-    <Form onSubmit={handleLogout} >
+    <form onSubmit={handleLogout} >
       <button className={Style.button}>
         <span>
           logout
         </span><br/>
         <i className="fas fa-sign-out-alt"></i>
       </button>
-    </Form>
+    </form>
   )
 }
 
