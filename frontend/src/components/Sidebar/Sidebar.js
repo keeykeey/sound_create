@@ -6,15 +6,14 @@ import {Link} from "react-router-dom";
 import endPoint from '../../services/endPoint';
 
 const Sidebar = (props) => {
-  const DRFUSERRELATION_API_URL = endPoint.getUserRelationUrl()
+  const DRFUSERRELATION_API_URL_FORVIEW = endPoint.getUserRelationUrlForView()
   const [userRelations,setUserRelations] = useState([])
   useEffect(() =>{
-    axios.get(DRFUSERRELATION_API_URL+'?follower='+String(props.loginId)).then(
+    axios.get(DRFUSERRELATION_API_URL_FORVIEW+'?follower='+String(props.loginId)).then(
       res=>{
-        //setUserRelations(res.data.filter(key=>String(key.follower.id)===String(props.loginId)))
         setUserRelations(res.data)
       })
-  },[DRFUSERRELATION_API_URL,props.loginId])
+  },[props.loginId])
 
   return(
       <div>
@@ -22,16 +21,16 @@ const Sidebar = (props) => {
           <Link to='/'>
             <button className={Style.button} >ホーム</button>
           </Link>
-          <Link to='/uprising'>
-            <button className={Style.button} > 急上昇 </button>
+          <Link to='/user'>
+            <button className={Style.button} > ユーザ別 </button>
           </Link>
-          <Link to='/famous'>
-            <button className={Style.button} > 人気 </button>
+          <Link to='/genre'>
+            <button className={Style.button} > ジャンル別 </button>
           </Link>
-          <Link to={'/mypage/'+props.loginName}>
+          <Link to={'/mypage/'+props.loginName+'/'}>
             <button className={Style.button} > マイページ </button>
           </Link>
-        <div className={Style.title}>お気に入り</div>
+        <div className={Style.title}>登録ユーザー</div>
 
         <div className={Style.block}>
           {userRelations.map(userRelations=>LinkButtonToFollowingUser(
@@ -50,7 +49,7 @@ const LinkButtonToFollowingUser = (
   followeeNameOnBtn
 )=>{
   return(
-    <Link to={'/favorite/'+followeeNameOnBtn} key={followeeNameOnBtn.toString()}>
+    <Link to={'/'+followeeNameOnBtn} key={followeeNameOnBtn.toString()}>
       <button className={Style.button} > {followeeNameOnBtn} </button>
     </Link>
 )}
