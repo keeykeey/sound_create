@@ -1,0 +1,82 @@
+.form{
+  height:400px;
+  width:500px;
+  margin:0 auto;
+  background-color:#fefefe;
+  border-style:solid;
+  border-width:thin;
+  border-color:#d0d0d0;
+}
+
+.block{
+  height:36px;
+  width:500px;
+  display:flex;
+  flex-direction:row;
+}
+
+.textLabel{
+  display:flex;
+  justify-content: center;
+  align-items:center;
+  margin:10px 0px 10px 10px;
+  height:16px;
+  width:120px;
+  font-size:16px;
+  color:#000000;
+}
+
+.songTitle{
+  height:30px;
+  width:300px;
+  font-size:16px;
+}
+
+.radio{
+  display:flex;
+  justify-content: center;
+  align-items:center;
+  margin-top:11px;
+  background-color:#4488ff;
+}
+
+.textRadio{
+  margin-top:6px;
+}
+
+.select{
+  width:150px;
+}
+
+.tag{
+  height:30px;
+  width:300px;
+  font-size:16px;
+}
+
+.audioUpload{
+  margin-top:4px;
+}
+
+.button{
+  height:36px;
+  width:390px;
+  margin:10px auto auto 55px ;
+  cursor:pointer;
+  border-width:thin;
+  background-color:#00cc55;
+}
+
+.button:hover{
+  background-color:#00aa33;
+}
+
+.buttoon{
+  height:28px;
+  cursor:pointer;
+}
+
+.row{
+  display:flex;
+  flex-direction:row;
+}

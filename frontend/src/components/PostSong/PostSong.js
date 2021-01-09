@@ -1,140 +1,185 @@
+//https://qiita.com/harumaxy/items/035ee46c82e8211d831c
 import react, {useState,useRef} from 'react'
-import Form from 'react-validation/build/form'
-import Input from 'react-validation/build/input'
 import Style from './PostSong.module.scss'
+import axios from 'axios'
+import endPoint from '../../services/endPoint'
 
+const DRFPOSTSONG_API_URL = endPoint.getPostSongUrl()
 
-const sampleFunc = () =>{
-  return 0;
-}
-
-const PostSong = (props) => {
-  const form = useRef();
-  const [songTitle,setSongTitle]=useState()
-  const [radioVal,setRadioVal] = useState(true)
-  const [genre,setGenre] = useState('')
-  const [tag,setTag] = useState('')
-  const [audioFile,setAudioFile]=useState('')
-
-const sample1 = () => {
-  console.log('0...',radioVal)
-}
-
-const handleSongTitleInput = (e)=>{
-  setSongTitle(e.target.value)
-}
-
-const handleRadio = (boolean) => {
-  setRadioVal(boolean)
-}
-
-const handleGenreInput = (e) => {
-  setGenre(e.target.value())
-}
-
-const handleTag = (e) => {
-  setTag(e.target.value())
-}
-
-const handleAudioFileUpload = () => {
-  return 0;
-}
-
+const PostSongPage = (props) =>{
   return(
     <div>
       <h3>
-        Post you're song   ....{String(radioVal)}......
+        Post you're song
       </h3>
       <hr/>
-      <ul>
-        <li>{songTitle}</li>
-        <li>{String(radioVal)}</li>
-
-      </ul>
       <div>
-      <Form onSubmit={sampleFunc} ref={form}>
-        <div className={Style.locate_center}>
-        <label>
-          <Input
-            className={Style.form_content}
-            type='text'
-            onChange={handleSongTitleInput}
-            validations = {[sampleFunc]}
-            name='song_title'
-            placeholder='song title'
-          />
-          <input
-            className={Style.radio}
-            id = 'radioPublic'
-            type='radio'
-            onChange={(e)=>{handleRadio(true,e)}}
-            checked={radioVal===true}
-          />公開
-          <input
-            className={Style.radio}
-            id = 'radioPrivate'
-            type='radio'
-            onChange={(e)=>{handleRadio(false,e)}}
-            checked={radioVal===false}
-          />非公開
-          <Input
-            className={Style.form_content}
-            id = 'password1'
-            type='password'
-            onChange={sampleFunc}
-            validations = {[sampleFunc]}
-            name='password1'
-            placeholder='password'
-          />
-          <Input
-            className={Style.form_content}
-            id = 'password2'
-            type='password'
-            onChange={sampleFunc}
-            validations = {[sampleFunc]}
-            name='password2'
-            placeholder='password again'
-          />
-          <Input
-            className={Style.form_content}
-            id = 'password2'
-            type='password'
-            onChange={sampleFunc}
-            validations = {[sampleFunc]}
-            name='password2'
-            placeholder='password again'
-          />
-        </label>
-          <p className={Style.description}>
-            <input
-              className={Style.checkbox}
-              id = 'agree'
-              type='checkbox'
-              value = 'true'
-              onChange={sampleFunc}
-            />
-            会員登録をするにあたり<a href='/'>利用規約</a>に同意します。
-          </p>
-          <p
-            className={Style.alert_text}
-            id='askForConsent'>
-          </p>
-          <button className={Style.button} >
-            <span>
-              アカウントを作成する
-            </span>
-            <i className="fas fa-user-plus"></i>
-          </button>
-          <p
-            className={Style.alert_text}
-            id='askForValidInput'>
-          </p>
+        <div className={Style.form}>
+          <PostSongForm/>
         </div>
-      </Form>
-
       </div>
     </div>
   )
+}
+
+const PostSongForm = (props) => {
+  const audioFileForm = useRef();
+  const [songTitle,setSongTitle]=useState()
+  const [radioVal,setRadioVal] = useState(false)
+  const [genre,setGenre] = useState('')
+  const [tag,setTag] = useState('')
+  const [audioFile,setAudioFile]=useState({
+    'name':null,
+    'value':null,
+  })
+
+  const handleSongTitleInput = (e)=>{
+    setSongTitle(e.target.value)
+  }
+
+  const handleRadio = (boolean) => {
+    setRadioVal(boolean)
+  }
+
+  const handleGenreInput = (e) => {
+    setGenre(e.target.value)
+  }
+
+  const handleTagInput = (e) => {
+    setTag(e.target.value)
+  }
+
+  const handlePushUploadButton = () =>{
+    const genreConverter = {
+      '':null,
+      'Rock':'RO',
+      'Pops':'PO',
+      'Hip-Hop':'HH',
+      'Classic':'CL',
+      'Hard-Rock':'HR',
+      'Heavy-Metal':'HM',
+      'Groovy':'GR',
+    }
+
+    const fileFormToUpload = new FormData()
+    fileFormToUpload.append('user_id',props.loginId)
+    fileFormToUpload.append('song_title',songTitle)
+    fileFormToUpload.append('is_public',radioVal)
+    fileFormToUpload.append('genre',genreConverter[String(genre)])
+    fileFormToUpload.append('tag',tag)
+    fileFormToUpload.append('audio_file',audioFileForm.current.files[0])
+
+    axios.post(DRFPOSTSONG_API_URL,
+      fileFormToUpload,
+      {headers:{
+        'Content-Type':'multipart/form-data',
+      }
+    }).then(res=>{
+      console.log('under then ...',res.response)
+    }).catch(err=>{
+      console.log('under catch...',err.response)
+    })
+  }
+
+  return(
+    <div>
+      <div className = {Style.block}>
+        <div className = {Style.textLabel}>
+          曲名
+        </div>
+        <input
+          className={Style.songTitle}
+          type='text'
+          onChange={handleSongTitleInput}
+          //validations = {}
+          placeholder='song title'
+        />
+      </div>
+      <br/>
+
+      <div className = {Style.block}>
+        <div className = {Style.textLabel}>曲の公開</div>
+        <input
+          className={Style.radio}
+          id = 'radioPublic'
+          type='radio'
+          onChange={(e)=>{handleRadio(true,e)}}
+          checked={radioVal===true}
+        />
+        <label className={Style.textRadio}>公開</label>
+        <input
+          className={Style.radio}
+          id = 'radioPrivate'
+          type='radio'
+          onChange={(e)=>{handleRadio(false,e)}}
+          checked={radioVal===false}
+        />
+        <label className={Style.textRadio}>非公開</label>
+      </div>
+      <br/>
+
+      <div className = {Style.block}>
+        <div className={Style.textLabel}>
+          ジャンル
+        </div>
+        <select onChange={handleGenreInput}
+          className={Style.select}
+        >
+          <option value=''>------</option>
+          <option value='Rock'>rock</option>
+          <option value='Pops'>pops</option>
+          <option value='Hip-Hop'>hip-hop</option>
+          <option value='Classic'>classic</option>
+          <option value='Hard-Rock'>hard-rock</option>
+          <option value='Heavy-Metal'>heavy-metal</option>
+          <option value='Groovy'>groovy</option>
+        </select>
+      </div>
+      <br/>
+
+      <div className = {Style.block}>
+        <div className={Style.textLabel}>
+          タグ
+        </div>
+        <input
+          className={Style.tag}
+          id = 'tag'
+          type='text'
+          onChange={handleTagInput}
+          //validations = {[sampleFunc]}
+          placeholder='tag'
+        />
+      </div>
+      <br/>
+
+      <div className = {Style.block}>
+        <div className={Style.textLabel}>
+          オーディオ
+        </div>
+        <input
+          className={Style.audioUpload}
+          id = 'audio-upload'
+          type='file'
+          ref={audioFileForm}
+          accept = 'audio/'
+        >
+        </input>
+      </div>
+      <br/>
+
+      <button
+        className={Style.button}
+        onClick = {handlePushUploadButton}>
+        アップロード
+        <i className="fas fa-upload"></i>
+      </button>
+    </div>
+  )
+}
+
+const PostSong = {
+  PostSongPage,
+  PostSongForm,
 }
 
 export default PostSong
