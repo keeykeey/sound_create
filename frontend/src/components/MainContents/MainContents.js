@@ -32,12 +32,18 @@ const pushFavoriteButton = (followerId,followeeId)=>{
           console.log('error',error.response)
           favoriteButton.innerHTML = 'チャンネル登録'
           favoriteButton.style.backgroundColor='#de0000'
-          cancelFavoriteButton(followerId,followeeId)
+          cancelFavoriteButton(
+            followerId,
+            followeeId,
+          )
         }})
   ),[followerId,followeeId]}
 
-const cancelFavoriteButton = (followerId,followeeId)=>{
-  const promiseOnj=axios.get(
+const cancelFavoriteButton = (
+  followerId,
+  followeeId,
+)=>{
+  axios.get(
     DRFUSERRELATION_API_URL+'?followee='+followeeId)
     .then(res=>res=res.data.filter(key=>String(key.follower)===String(followerId))[0]['id'])
     .then(res=>axios.delete(DRFUSERRELATION_API_URL + String(res)))
@@ -83,11 +89,20 @@ const subtractLikeNumInDb = (song_id,user_id) => {
     })
 }
 
-const PutChannelRegisterButton = (isFollowing,loginId,followeeId) => {
+const PutChannelRegisterButton = (
+  isFollowing,
+  loginId,
+  followeeId,
+  props,
+) => {
   if(isFollowing){
     return(
       <button className={Style.stopRegisteringChannel}
-        onClick={(e)=>pushFavoriteButton(loginId,followeeId,e)}
+        onClick={(e)=>pushFavoriteButton(
+          loginId,
+          followeeId,
+          e,
+        )}
         id = {'favoriteOf'+String(loginId)+'and'+String(followeeId)}>
         登録解除
       </button>
@@ -95,7 +110,11 @@ const PutChannelRegisterButton = (isFollowing,loginId,followeeId) => {
   }else if(!isFollowing){
     return(
       <button className={Style.registerChannel}
-        onClick={(e)=>pushFavoriteButton(loginId,followeeId,e)}
+        onClick={(e)=>pushFavoriteButton(
+          loginId,
+          followeeId,
+          e,
+        )}
         id = {'favoriteOf'+String(loginId)+'and'+String(followeeId)}>
         チャンネル登録
       </button>
@@ -119,6 +138,9 @@ const SongGridItemForPublic = (
       <audio className={Style.audio} src={String(audio_file)} controls/>
       <div className={Style.userName} >
         user_name : {user_name}
+        <Link to={'/'+user_name}>
+          <button className={Style.linkToEachUsersPage}> チャンネルへ移動 </button>
+        </Link>
       </div>
       <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
         <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
@@ -151,7 +173,33 @@ const SongGridItemForPrivate = (
     </div>)
 }
 
-const ChannelRegisterButton = (loginId,followeeId) => {
+const SongGridItemForFavorite = (
+  song_title,
+  audio_file,
+  user_name,
+  followeeId,
+  login_user_id,
+  song_id,
+  likes_count,
+)=>{
+  return(
+  <div className={Style.eachSongBlock}>
+    <div className={Style.item}>
+      <div className={Style.songTitle} >{song_title} </div>
+      <audio className={Style.audio} src={String(audio_file)} controls/>
+      <div className={Style.userName} >
+        user_name : {user_name}
+      </div>
+      <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
+        <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
+      </button>
+    </div>
+    <div className={Style.item}>
+    </div>
+  </div>
+)}
+
+const ChannelRegisterButton = (loginId,followeeId,props) => {
 //  const [userRelations,setUserRelations] = useState([])
   const [isFollowing,setIsFollowing] = useState(false)
 
@@ -174,8 +222,6 @@ const ChannelRegisterButton = (loginId,followeeId) => {
       error=>console.log('error...',error)
     )
   },[loginId,followeeId])
-
-  console.log('2...isFollowing',isFollowing)
 
   if(isFollowing){
     return(
@@ -315,7 +361,7 @@ useEffect(()=>{
         You're Posts
       </h3>
       <Link to={'/mypage/'+props.loginName+'/mypost'}>
-        <button>曲をアップロード</button>
+        <button className={Style.linkToUploadSong}>曲を追加</button>
       </Link>
       <hr/>
       <ul>
@@ -334,14 +380,6 @@ useEffect(()=>{
   )
 }
 
-const MysongDetail = (props) => {
-  return(
-    <div>
-      mysong main content
-    </div>
-  )
-}
-
 const EachUsersPage = (props) =>{
   const {followeeName} =useParams();
   const [song,setSong]=useState([]);
@@ -352,7 +390,7 @@ const EachUsersPage = (props) =>{
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL_FORVIEW)
     .then(res=>{setSong(res.data.filter(key=>String(key.user_id.username)===String(followeeName)))})
-  },[followeeName]
+  },[followeeName,]
   );
 
   useEffect(()=>{
@@ -364,7 +402,6 @@ const EachUsersPage = (props) =>{
     axios.get(DRFUSERRELATION_API_URL_FORVIEW + '?follower='+ String(props.loginId))
     .then(
       res=>{
-        console.log('status',res.data);
         console.log(
           '3...',
           String(res.data.filter
@@ -389,18 +426,19 @@ const EachUsersPage = (props) =>{
     .catch(error=>console.log('error...',error))
   },[props.loginId,followeeName])
 
-  console.log('boolean',isFollowing)
-  console.log('loginId',props.loginId)
-  console.log('followeeId',followeeId)
-
   return (
     <div>
       <h3> {followeeName} </h3>
-      <div>{PutChannelRegisterButton(isFollowing,props.loginId,followeeId)}</div>
+      <div>{PutChannelRegisterButton(
+        isFollowing,
+        props.loginId,
+        followeeId,
+        props,
+      )}</div>
       <hr/>
       <ul>
         {song.map(
-          song=>SongGridItemForPublic(
+          song=>SongGridItemForFavorite(
             song.song_title,
             song.audio_file,
             song.user_id.username,
@@ -420,7 +458,6 @@ const MainContents = {
   SortByUser,
   SortByGenre,
   Mypage,
-  MysongDetail,
   EachUsersPage,
 };
 
