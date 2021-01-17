@@ -27,14 +27,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
             ]
     )
 
-
     class Meta:#Meta情報
         model = CustomUser
         fields = ("id","username", "email","password")
         extra_kwargs = {
             'password':{'write_only':True,'required':True},
         }
-
 
     def create(self,validated_data):
         customUser = CustomUser.objects.create_user(**validated_data)

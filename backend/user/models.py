@@ -20,9 +20,9 @@ class CustomUser(AbstractUser):
 
     likes_that_user_casted = models.ManyToManyField(
         PostedSong,
-        verbose_name='likes that user casted',
+        verbose_name='+',
         through=Likes,
-        related_name='+',
+        related_name='likesuser',
     )
 
     def __str__(self):
