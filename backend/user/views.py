@@ -34,9 +34,12 @@ class CustomUserViewSetApi(APIView):
         else:
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
     def delete(self,request,pk,format=None):
-        deleting_object = CustomUser.objects.get(id=pk)
-        deleting_object.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        try:
+            deleting_object = CustomUser.objects.get(id=pk)
+            deleting_object.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except CustomUser.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
     def put(self,request,pk,format=None):
         putting_object = CustomUser.objects.get(id=pk)
         serializer = CustomUserSerializer(putting_object,request.data)

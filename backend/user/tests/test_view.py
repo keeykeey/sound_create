@@ -163,7 +163,7 @@ class DeleteCustomUserTestCase(TestCase):
         )
         self.user_id = CustomUser.objects.get(username = 'testuser1').id
 
-    def testDeleteCustomUserSuccess(self):
+    def testValidDeleteCustomUser(self):
         client = APIClient()
         response = client.delete(
             path = self.URL + str(self.user_id),
@@ -177,8 +177,22 @@ class DeleteCustomUserTestCase(TestCase):
         )
         self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
 
-
-
+    def testInvalidDeleteCustomUser(self):
+        client = APIClient()
+        unexisting_id = 11111111
+        response = client.delete(
+            path = self.URL + str(unexisting_id),
+            data = {
+                "username":"testuser1",
+                "email":"test@test.com",
+                "password":"testuser1spassword"
+            },
+            follow = True,
+            format = None,
+        )
+        print('response',response)
+        print('response.data',response.data)
+        self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
 
 
 
