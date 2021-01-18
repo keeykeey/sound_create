@@ -10,5 +10,7 @@ router.register('drfuserrelationsforview',UserRelationsViewSetForView)
 
 urlpatterns = [
     path('',include(router.urls)),
-    path('drfcustomuser/api',CustomUserViewSetApi.as_view(),name='drf')
+    path('drfcustomuserapi/',CustomUserViewSetApi.as_view()),
+    path('drfcustomuserapi/<int:pk>',CustomUserViewSetApi.as_view(),name='drfcustomuser_api'),
+#    path('drfcustomuserapi/<str:username>',CustomUserViewSetApi.as_view(),name='drfcustomuser_api')
 ]
