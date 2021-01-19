@@ -153,8 +153,8 @@ class CustomUserSerializerTestCase(TestCase):
         serializer = CustomUserSerializer(data=inputData)
         self.assertEqual(serializer.is_valid(),False)
 
-class UserRelationsSerializer(TestCase):
-    def test_setUp(self):
+class UserRelationsSerializerTestCase(TestCase):
+    def setUp(self):
         _username = ['testuser1','testuser2','testuser3','testuser4','testuser5']
         _email = ['user1@test.com','user2@test.com','user3@test.com',
             'user4@test.com','user5@test.com'
@@ -169,12 +169,10 @@ class UserRelationsSerializer(TestCase):
                 email=_email[i],
                 password=_password[i]
             )
-
-
-
-
-
-
-
-
-   #
+    def testIfUserRelationIsValid(self):
+        inputData = {
+            'follower' : 1,
+            'followee' : 2
+        }
+        serializer = UserRelationsSerializer(data=inputData)
+        self.assertEqual(serializer.is_valid(),True)

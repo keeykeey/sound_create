@@ -1,6 +1,6 @@
 #https://www.codeflow.site/ja/article/test-driven-development-of-a-django-restful-api
 from django.test import TestCase
-from ..models import CustomUser
+from ..models import CustomUser,UserRelations
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -193,6 +193,114 @@ class DeleteCustomUserTestCase(TestCase):
         print('response',response)
         print('response.data',response.data)
         self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
+
+class CreateUserRelationsTestCase(TestCase):
+    def setUp(self):
+        self.URL = 'http://testserver/user/drfuserrelations/'
+        self.followeeData = CustomUser.objects.create(
+            username = 'followee' ,
+            email = 'followee@test.com',
+            password = 'followeePw'
+        )
+        self.followerData = CustomUser.objects.create(
+            username = 'follower',
+            email = 'follower@test.com',
+            password = 'followerPw'
+        )
+        self.followeeId = CustomUser.objects.get(
+            username = 'followee'
+        ).id
+        self.followerId = CustomUser.objects.get(
+            username = 'follower'
+        ).id
+
+    def testCreateUserRelations(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "follower" : int(self.followerId),
+                "followee" : int(self.followeeId)
+            },
+            format = None
+        )
+        try:
+            print('response',response)
+            print('response.data',response.data)
+        except :
+            pass
+
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+
+    def testCreateInvalidUserRelations(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "follower":1111,
+                "followee":2222
+            },
+            format =None
+        )
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
+
+class GetUserRelationsTestCase(TestCase):
+    def setUp(self):
+        self.URL = 'http://testserver/user/drfuserrelations/'
+        self.follower = CustomUser.objects.create(
+            username = 'follower',
+            email = 'follower@email.com',
+            password = 'followerpassword'
+        )
+        self.followerId = CustomUser.objects.get(username = 'follower').id
+
+        self.followee = CustomUser.objects.create(
+            username = 'followee',
+            email = 'followee@mail.com',
+            password = 'followeepassword'
+        )
+        self.followeeId = CustomUser.objects.get(username = 'followee').id
+
+        self.userRelations = UserRelations.objects.create(
+            follower = (self.follower),
+            followee = (self.followee)
+        )
+
+    def testGetUserRelationsTestCase(self):
+        client = APIClient()
+        response = client.get(
+            self.URL
+        )
+        try:
+            print('response....',response)
+            print('response.data...',response.data)
+        except:
+            pass
+
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+
+    def testGetAnUserRelationsTestCase(self):
+        client = APIClient()
+        response = client.get(
+            self.URL+ str(self.userRelations.id),
+            follow = True
+        )
+
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+
+    def testGetAnInvalidUserRelationsTestCase(self):
+        client = APIClient()
+        response = client.get(
+            self.URL+ str(50),
+            follow = True
+        )
+
+        self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
+
+
+
+
+
 
 
 
