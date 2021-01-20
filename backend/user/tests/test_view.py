@@ -299,6 +299,42 @@ class DeleteCustomUserApiTestCase(TestCase):
         print('response.data',response.data)
         self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
 
+class PutCustomUserApiTestCase(TestCase):
+    def setUp(self):
+        self.URL = 'http://testserver/user/drfcustomuserapi/'
+        self.setUpData = CustomUser.objects.create(
+            username = 'testuser1',
+            email = 'test@test.com',
+            password = 'testuser1spassword'
+        )
+        self.user_id = CustomUser.objects.get(username = 'testuser1').id
+
+    def testPutValidCustomUserTestCase(self):
+        client = APIClient()
+        response = client.put(
+            path = self.URL + str(self.user_id),
+            data = {
+                "username" : "testuser1",
+                "email" :  "testtest@mail.com",
+                "password" : "testuser1password"
+            },
+            format = None,
+        )
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+
+    def testPutInvalidCustomUserTestCase(self):
+        client = APIClient()
+        response = client.put(
+            path = self.URL + str(self.user_id),
+            data = {
+                "username" : "testuser1",
+                "email" : "mailAdressWithNoAT",
+                "password" : "testuser1password"
+            },
+            format = None
+        )
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
+
 class CreateUserRelationsTestCase(TestCase):
     def setUp(self):
         self.URL = 'http://testserver/user/drfuserrelations/'
@@ -402,7 +438,53 @@ class GetUserRelationsTestCase(TestCase):
 
         self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
 
+class DeleteUserRelationsTestCase(TestCase):
+    def setUp(self):
+        self.URL = 'http://testserver/user/drfuserrelations/'
+        self.follower = CustomUser.objects.create(
+            username = 'follower',
+            email = 'follower@email.com',
+            password = 'followerpassword'
+        )
+        self.followerId = CustomUser.objects.get(username = 'follower').id
 
+        self.followee = CustomUser.objects.create(
+            username = 'followee',
+            email = 'followee@mail.com',
+            password = 'followeepassword'
+        )
+        self.followeeId = CustomUser.objects.get(username = 'followee').id
+
+        self.userRelations = UserRelations.objects.create(
+            follower = (self.follower),
+            followee = (self.followee)
+        )
+
+    def testDeleteUserRelationsTestCaseValid(self):
+        client = APIClient()
+        response = client.get(
+            path = self.URL + str(self.userRelations.id),
+            data = {
+                "follower" : self.followerId,
+                "followee" : self.followeeId
+            },
+            format = None,
+            follow = True
+        )
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+
+    def testDeleteUserRelationsTestCaseInvalid(self):
+        client = APIClient()
+        response = client.get(
+            path = self.URL + str(self.userRelations.id),
+            data = {
+                "follower" : self.followerId,
+                "followee" : 200
+            },
+            format = None,
+            follow = True
+        )
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
 
 
 
