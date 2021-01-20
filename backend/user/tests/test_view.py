@@ -71,6 +71,111 @@ class GetCustomUserTestCase(TestCase):
 
         self.assertEqual(response.data,[])
 
+class CreateCustomUserTestCase(TestCase):
+    def setUp(self):
+        self.URL = 'http://testserver/user/drfcustomuser/'
+
+    def testCreateValidCustomUser(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "username" : "testuser",
+                "email" : "test@test.com",
+                "password" : "p@ssword"
+            },
+            format = None
+        )
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+
+    def testCreateInvalidCustomUSer(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "username" : "a",
+                "email" : "test@test.com",
+                "password" : "p@ssword"
+            },
+            format = None
+        )
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
+
+class DeleteCustomUserTestCase(TestCase):
+    def setUp(self):
+        self.URL = 'http://testserver/user/drfcustomuser/'
+        self.username = 'testuser'
+        self.email = 'email@mail.com'
+        self.password = 'p@ssword'
+        self.custom_user = CustomUser.objects.create(
+            username = self.username,
+            email = self.email,
+            password = self.password
+        )
+        self.user_id = CustomUser.objects.get(username = self.username).id
+
+    def testDeleteCustomUserTestCase(self):
+        client = APIClient()
+        response = client.delete(
+            path = self.URL + str(self.user_id),
+            data = {
+                "username" : self.username,
+                "email" : self.email,
+                "password" : self.password
+            },
+            format = None,
+            follow = True
+        )
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+
+    def testDeleteInvalidCustomUserTestCase(self):
+        client = APIClient()
+        invalid_user_id = '330'
+        response = client.delete(
+            path = self.URL + invalid_user_id,
+            data = {
+                "username" : self.username,
+                "email" : self.email,
+                "password" : self.password
+            },
+            format =None,
+            follow = True
+        )
+        self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
+
+class PutCustomUserTestCase(TestCase):
+    def setUp(self):
+        self.URL = 'http://testserver/user/drfcustomuser/'
+        self.username = 'testuser'
+        self.email = 'email@mail.com'
+        self.password = 'p@ssword'
+        self.custom_user = CustomUser.objects.create(
+            username = self.username,
+            email = self.email,
+            password = self.password
+        )
+        self.user_id = CustomUser.objects.get(username = self.username).id
+
+    def testPutCustomUserTestCase(self):
+        client = APIClient()
+        response = client.put(
+            path = self.URL,
+            data = {
+                "username" : self.username,
+                "email" : 'changingEmail@mail.com',
+                "password" : self.password
+            },
+            format = None
+        )
+
+        try:
+            print('response...',response)
+            print('response.data...',response.data)
+        except:
+            pass
+
+        self.assertEqual(response.status_code,status.HTTP_405_METHOD_NOT_ALLOWED)
+
 class GetCustomUserApiTestCase(TestCase):
     def setUp(self):
         self.URL = 'http://testserver/user/drfcustomuserapi/'
@@ -153,7 +258,7 @@ class CreateCustomUserApiTestCase(TestCase):
 
         self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
 
-class DeleteCustomUserTestCase(TestCase):
+class DeleteCustomUserApiTestCase(TestCase):
     def setUp(self):
         self.URL = 'http://testserver/user/drfcustomuserapi/'
         self.setUpData = CustomUser.objects.create(
@@ -296,6 +401,7 @@ class GetUserRelationsTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
+
 
 
 
