@@ -1,5 +1,3 @@
-#https://docs.djangoproject.com/ja/3.1/topics/testing/overview/#writing-tests
-
 from django.test import TestCase
 from ..models import CustomUser,UserRelations
 
