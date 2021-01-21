@@ -3,7 +3,9 @@ from django.test import TestCase
 from ..models import CustomUser,UserRelations
 from rest_framework import status
 from rest_framework.test import APIClient
+from django.utils import timezone
 
+#about CustomUserModel
 class GetCustomUserTestCase(TestCase):
     def setUp(self):
         self.username = 'testuser1'
@@ -176,6 +178,7 @@ class PutCustomUserTestCase(TestCase):
 
         self.assertEqual(response.status_code,status.HTTP_405_METHOD_NOT_ALLOWED)
 
+#about CustomUserModel API
 class GetCustomUserApiTestCase(TestCase):
     def setUp(self):
         self.URL = 'http://testserver/user/drfcustomuserapi/'
@@ -335,6 +338,7 @@ class PutCustomUserApiTestCase(TestCase):
         )
         self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
 
+#about UserRelationsModel
 class CreateUserRelationsTestCase(TestCase):
     def setUp(self):
         self.URL = 'http://testserver/user/drfuserrelations/'
@@ -485,6 +489,56 @@ class DeleteUserRelationsTestCase(TestCase):
             follow = True
         )
         self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
+
+#about UserRelationsViewSetForView
+class GetUserRelationsViewSetForView(TestCase):
+    def setUp(self):
+        self.URL = 'http://testserver/user/drfuserrelationsforview'
+
+        self.followerName = 'follower',
+        self.followerEmail = 'follower@email.com'
+        self.followerPassword = 'followerPassword'
+        self.follower = CustomUser.objects.create(
+            username = self.followerName,
+            email = self.followerEmail,
+            password = self.followerPassword
+        )
+        self.followerId = CustomUser.objects.get(username = self.followerName).id
+
+        self.followeeName = 'followee',
+        self.followeeEmail = 'followee@email.com'
+        self.followeePassword = 'followeePassword'
+        self.followee = CustomUser.objects.create(
+            username = self.followeeName,
+            email = self.followeeEmail,
+            password = self.followeePassword
+        )
+        self.followeeId = CustomUser.objects.get(username = self.followeeName).id
+
+        self.related_day = timezone.datetime.today()
+        self.related_time = timezone.datetime.now()
+
+        self.userRelations = UserRelations.objects.create(
+            follower = self.follower,
+            followee = self.followee
+        )
+
+    def testGetUserRelationsViewSetForViewTestCase(self):
+        client = APIClient()
+        response = client.get(
+            path=self.URL,
+            follow=True
+        )
+
+        try:
+            print('response...',response)
+            print('response.content...',response.data[0]['follower']['username'])
+        except:
+            pass
+
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+
+
 
 
 
