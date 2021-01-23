@@ -1,117 +1,611 @@
 from django.test import TestCase
 from ..models_mystudio import PostedSong, Likes
+from ..serializers import PostedSongSerializer
 from user.models import CustomUser
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
-from rest_framework.test import APIClient
+from rest_framework import status
+from rest_framework.test import APIClient,RequestsClient
 from django.utils import timezone
 
-
-# Create your tests here.
-
-class PostSongTestCase(TestCase):
+class GetPostedSongTestCase(TestCase):
     def setUp(self):
-        _username = ['testuser1','testuser2','testuser3','testuser4','testuser5']
-        _email = ['user1@test.com','user2@test.com','user3@test.com',
-            'user4@test.com','user5@test.com'
-        ]
-        _password = ['testuser1Password','testuser2Password','testuser3Password',
-            'testuser4Password','testuser5Password'
-        ]
+        #set up users
+        self.user1 = CustomUser.objects.create(
+                username = 'testuser1',
+                email = 'user1@test.com',
+                password = 'testuser1Password'
+        )
+        self.userId1 = CustomUser.objects.get(username='testuser1').id
 
-        for i in range(len(_username)):
-            CustomUser.objects.create(
-                username=_username[i],
-                email=_email[i],
-                password=_password[i]
-            )
+        self.user2 = CustomUser.objects.create(
+                username = 'testuser2',
+                email = 'user2@test.com',
+                password = 'testuser2Password'
+        )
+        self.userId2 = CustomUser.objects.get(username='testuser2').id
 
-    def testGetmethodToEndpoint(self):
-        URL = 'http://127.0.0.1:8000/drfPostSong/'
+        #set up songs
+        self.URL = 'http://testsertver/drfPostSong/'
+        self.audioFile = File(open('mystudio/tests/testAudio.mp3','rb'))
+        self.audioFileUpload = SimpleUploadedFile(
+            name = 'testAudio.mp3',
+            content = b'audioFile'
+        )
+        self.postedSong = PostedSong.objects.create(
+            user_id = self.user1,
+            song_title = 'testSongTitle',
+            is_public = True,
+            genre = 'RO',
+            tag = 'tag the song',
+            audio_file = self.audioFileUpload,
+            posted_day = timezone.datetime.today(),
+        )
+
+    def testGetToPostSongEndpoint(self):
         client = APIClient()
         response = client.get(
-            URL,
+            self.URL,
         )
-        self.assertEqual(response.status_code,200)
+        print('print response',response.data)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
 
-    def testPostingDatas(self):
-        URL = 'http://127.0.0.1:8000/drfPostSong/'
+    def testValidGetToPostSongEndpointDetail(self):
         client = APIClient()
-        audioFile = File(open('mystudio/tests/testAudio.mp3','rb'))
-        audioFileUploaded = SimpleUploadedFile(
-            name = 'testAudio.mp3',
-            content = b'audioFile',
+        response = client.get(
+            path = self.URL + str(self.userId1),
+            follow = True
         )
+        print('print response',response.data)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
 
-        postData = {
-            'user_id' : CustomUser.objects.all()[0].id,
-            'song_title' : 'testAudio',
-            'is_public' : True,
-            'genre' : 'RO',
-            'tag' : 'tag',
-            'audio_file' : audioFileUploaded,
-            'posted_day' : timezone.datetime.today()
-        }
-
-        response = client.post(
-            URL,
-            postData,
-            format='multipart',
-        )
-
-        self.assertEqual(response.status_code,201)
-
-    def testPuttingDatas(self):
-        user_id = CustomUser.objects.all()[0].id
-        URL_POST = 'http://127.0.0.1:8000/drfPostSong/'
-        URL_PUT = 'http://127.0.0.1:8000/drfPostSong/'+str(user_id)
+    def testInvalidGetToPostSongEndpointDetail(self):
         client = APIClient()
-        audioFile = File(open('mystudio/tests/testAudio.mp3','rb'))
-        audioFileUploaded = SimpleUploadedFile(
+        response = client.get(
+            path = self.URL + '222',
+            follow = True
+        )
+        print('print response',response.data)
+        self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
+
+class CreatePostSongTestCase(TestCase):
+    def setUp(self):
+        #set up users
+        self.user1 = CustomUser.objects.create(
+                username = 'testuser1',
+                email = 'user1@test.com',
+                password = 'testuser1Password'
+        )
+        self.userId1 = CustomUser.objects.get(username='testuser1').id
+
+        self.user2 = CustomUser.objects.create(
+                username = 'testuser2',
+                email = 'user2@test.com',
+                password = 'testuser2Password'
+        )
+        self.userId2 = CustomUser.objects.get(username='testuser2').id
+
+        #set up songs
+        self.URL = 'http://testsertver/drfPostSong/'
+        self.audioFile = File(open('mystudio/tests/testAudio.mp3','rb'))
+        self.audioFileUpload = SimpleUploadedFile(
             name = 'testAudio.mp3',
-            content = b'audioFile',
+            content = b'audioFile'
         )
 
-        postData = {
-            'user_id' : user_id,
-            'song_title' : 'testAudio-v1',
-            'is_public' : True,
-            'genre' : 'RO',
-            'tag' : 'tag',
-            'audio_file' : audioFileUploaded,
-            'posted_day' : timezone.datetime.today()
-        }
-
+    def testCreateSong(self):
+        client = APIClient()
         response = client.post(
-            URL_POST,
-            postData,
-            format='multipart',
+            path = self.URL,
+            data = {
+                "user_id":self.userId1,
+                "song_title":'testSongTitle',
+                "is_public":"True",
+                "genre":"RO",
+                "tag":"tagthesong",
+                "audio_file":self.audioFileUpload,
+                "posted_day":timezone.datetime.today()
+            },
+            format = None,
+        )
+        print(response.data)
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+
+    def testCreateSongWithoutSongTitle(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "user_id":self.userId1,
+                "is_public":"True",
+                "genre":"RO",
+                "tag":"tagthesong",
+                "audio_file":self.audioFileUpload,
+                "posted_day":timezone.datetime.today()
+            },
+            format = None,
+        )
+        print(response.data)
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
+
+    def testCreateSongWithoutSongTitle(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "user_id":self.userId1,
+                "is_public":"True",
+                "genre":"RO",
+                "tag":"tagthesong",
+                "audio_file":self.audioFileUpload,
+                "posted_day":timezone.datetime.today()
+            },
+            format = None,
+        )
+        print(response.data)
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
+
+    def testCreateSongWithoutGenre(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "user_id":self.userId1,
+                "song_title":"testSongTitle",
+                "is_public":"True",
+                "tag":"tagthesong",
+                "audio_file":self.audioFileUpload,
+                "posted_day":timezone.datetime.today()
+            },
+            format = None,
+        )
+        print(response.data)
+        #ジャンルは入力されていなくてもアップロード成功するべき
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+
+    def testCreateSongWithoutTag(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "user_id":self.userId1,
+                "song_title":"testSongTitle",
+                "is_public":"True",
+                "genre":"RO",
+                "audio_file":self.audioFileUpload,
+                "posted_day":timezone.datetime.today()
+            },
+            format = None,
+        )
+        print(response.data)
+        #タグは入力されていなくてもアップロード成功するべき
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+
+    def testCreateSongWithoutSong(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "user_id":self.userId1,
+                "song_title":'testSongTitle',
+                "is_public":"True",
+                "genre":"RO",
+                "tag":"tagthesong",
+                "posted_day":timezone.datetime.today()
+            },
+            format = None,
+        )
+        print(response.data)
+        #songがない場合はアップロード失敗とするべき。
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
+
+    def testCreateSongWithoutSong(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "user_id":self.userId1,
+                "song_title":'testSongTitle',
+                "is_public":"True",
+                "genre":"RO",
+                "tag":"tagthesong",
+                "posted_day":timezone.datetime.today()
+            },
+            format = None,
+        )
+        print(response.data)
+        #songがない場合はアップロード失敗とするべき。
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
+
+    def testCreateSongWithoutPostedDay(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "user_id":self.userId1,
+                "song_title":'testSongTitle',
+                "is_public":"True",
+                "genre":"RO",
+                "tag":"tagthesong",
+                "audio_file":self.audioFileUpload,
+            },
+            format = None,
+        )
+        print(response.data)
+        #投稿日はデフォルトで入力されるべきなので、ユーザーが指定しなくてもアップロード成功するべき。
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+
+class DeletePostSongTestCase(TestCase):
+    def setUp(self):
+        #set up users
+        self.user1 = CustomUser.objects.create(
+                username = 'testuser1',
+                email = 'user1@test.com',
+                password = 'testuser1Password'
+        )
+        self.userId1 = CustomUser.objects.get(username='testuser1').id
+
+        self.user2 = CustomUser.objects.create(
+                username = 'testuser2',
+                email = 'user2@test.com',
+                password = 'testuser2Password'
+        )
+        self.userId2 = CustomUser.objects.get(username='testuser2').id
+
+        #set up songs
+        self.URL = 'http://testsertver/drfPostSong/'
+        self.audioFile = File(open('mystudio/tests/testAudio.mp3','rb'))
+        self.audioFileUpload = SimpleUploadedFile(
+            name = 'testAudio.mp3',
+            content = b'audioFile'
+        )
+        self.postedSong = PostedSong.objects.create(
+            user_id = self.user1,
+            song_title = 'testSongTitle',
+            is_public = True,
+            genre = 'RO',
+            tag = 'tag the song',
+            audio_file = self.audioFileUpload,
+            posted_day = timezone.datetime.today(),
         )
 
-        check_response = client.get(URL_PUT)
-        print('check response...',check_response)
-        self.assertEqual(check_response.status_code,201)
+    def testDeleteSongValidCase(self):
+        client = APIClient()
+        response = client.delete(
+            path = self.URL + str(self.userId1),
+            data = {
+                "user_id" : str(self.userId1),
+                "song_title" : "testSongTitle",
+                "is_public" : True,
+                "genre" : "RO",
+                "tag" : "tag the song",
+                "audio_file" : self.audioFileUpload,
+                "posted_day" : timezone.datetime.today()
+            },
+            format = None,
+            follow = True
+        )
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
 
-        postData2 = {
-            'user_id' : user_id,
-            'song_title' : 'testAudio-v2',
-            'is_public' : True,
-            'genre' : 'PO',
-            'tag' : 'tag-changed',
-            'audio_file' : audioFileUploaded,
-            'posted_day' : timezone.datetime.today()
-        }
+    def testDeleteSongWithWrongUrl(self):
+        client = APIClient()
+        response = client.delete(
+            path = self.URL + '22222',
+            data = {
+                "user_id" : str(self.userId1),
+                "song_title" : "testSongTitle",
+                "is_public" : True,
+                "genre" : "RO",
+                "tag" : "tag the song",
+                "audio_file" : self.audioFileUpload,
+                "posted_day" : timezone.datetime.today()
+            },
+            format = None,
+            follow = True
+        )
+        self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
 
-        response2 = client.put(
-            URL_PUT,
-            postData2,
-            format='json',
+
+class PutPostSongTestCase(TestCase):
+    def setUp(self):
+        #set up users
+        self.user1 = CustomUser.objects.create(
+                username = 'testuser1',
+                email = 'user1@test.com',
+                password = 'testuser1Password'
+        )
+        self.userId1 = CustomUser.objects.get(username='testuser1').id
+
+        self.user2 = CustomUser.objects.create(
+                username = 'testuser2',
+                email = 'user2@test.com',
+                password = 'testuser2Password'
+        )
+        self.userId2 = CustomUser.objects.get(username='testuser2').id
+
+        #set up songs
+        self.URL = 'http://testsertver/drfPostSong/'
+        self.audioFile = File(open('mystudio/tests/testAudio.mp3','rb'))
+        self.audioFileUpload = SimpleUploadedFile(
+            name = 'testAudio.mp3',
+            content = b'audioFile'
+        )
+        self.postedSong = PostedSong.objects.create(
+            user_id = self.user1,
+            song_title = 'testSongTitle',
+            is_public = True,
+            genre = 'RO',
+            tag = 'tag the song',
+            audio_file = self.audioFileUpload,
+            posted_day = timezone.datetime.today(),
+        )
+
+    def testPutSongValidCase(self):
+        client = APIClient()
+        response = client.put(
+            path = self.URL + str(self.userId1),
+            data = {
+                "user_id" : str(self.userId1),
+                "song_title" : "ChangingTestSongTitle",
+                "is_public" : True,
+                "genre" : "RO",
+                "tag" : "tag the song",
+                "audio_file" : self.audioFileUpload,
+                "posted_day" : timezone.datetime.today()
+            },
+            format = None,
+            follow = True
+        )
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+
+    def testPutSongWithWrongUrl(self):
+        client = APIClient()
+        response = client.put(
+            path = self.URL + '222222',
+            data = {
+                "user_id" : str(self.userId1),
+                "song_title" : "ChangingTestSongTitle",
+                "is_public" : True,
+                "genre" : "RO",
+                "tag" : "tag the song",
+                "audio_file" : self.audioFileUpload,
+                "posted_day" : timezone.datetime.today()
+            },
+            format = None,
+            follow = True
+        )
+        self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
+
+class GetLikesTestCase(TestCase):
+    def setUp(self):
+        self.user1 = CustomUser.objects.create(
+                username = 'testuser1',
+                email = 'user1@test.com',
+                password = 'testuser1Password'
+        )
+        self.userId1 = CustomUser.objects.get(username='testuser1').id
+
+        self.user2 = CustomUser.objects.create(
+                username = 'testuser2',
+                email = 'user2@test.com',
+                password = 'testuser2Password'
+        )
+        self.userId2 = CustomUser.objects.get(username='testuser2').id
+
+        #set up songs
+        self.audioFile = File(open('mystudio/tests/testAudio.mp3','rb'))
+        self.audioFileUpload = SimpleUploadedFile(
+            name = 'testAudio.mp3',
+            content = b'audioFile'
+        )
+        self.postedSong = PostedSong.objects.create(
+            user_id = self.user1,
+            song_title = 'testSongTitle',
+            is_public = True,
+            genre = 'RO',
+            tag = 'tag the song',
+            audio_file = self.audioFileUpload,
+            posted_day = timezone.datetime.today(),
+        )
+
+        #set up Likes
+        self.likes = Likes.objects.create(
+            song_id = self.postedSong,
+            user_id = self.user2,
+            like_casted_day = timezone.datetime.today(),
+            like_casted_time = timezone.datetime.now()
+        )
+
+        #set endpoint url
+        self.URL = 'http://testsertver/drfLikes/'
+
+    def testGetLikes(self):
+        client = APIClient()
+        response = client.get(
+            path = self.URL
+        )
+
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+
+    def testGetALike(self):
+        client = APIClient()
+        response = client.get(
+            path = self.URL + str(self.likes.id),
             follow = True
         )
 
-        print('CustomUser...',CustomUser.objects.all())
-        print('user_id...',user_id)
-        print('response2...',response2)
-        print('response2.data...',response2.data)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
 
-        self.assertEqual(response2.status_code,201)
+    def testGetALikeWithWrongUrl(self):
+        client = APIClient()
+        response = client.get(
+            path = self.URL + '2222',
+            follow = True
+        )
+
+        self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
+
+class CreateLikesTestCase(TestCase):
+    def setUp(self):
+        self.user1 = CustomUser.objects.create(
+                username = 'testuser1',
+                email = 'user1@test.com',
+                password = 'testuser1Password'
+        )
+        self.userId1 = CustomUser.objects.get(username='testuser1').id
+
+        self.user2 = CustomUser.objects.create(
+                username = 'testuser2',
+                email = 'user2@test.com',
+                password = 'testuser2Password'
+        )
+        self.userId2 = CustomUser.objects.get(username='testuser2').id
+
+        #set up songs
+        self.audioFile = File(open('mystudio/tests/testAudio.mp3','rb'))
+        self.audioFileUpload = SimpleUploadedFile(
+            name = 'testAudio.mp3',
+            content = b'audioFile'
+        )
+        self.postedSong = PostedSong.objects.create(
+            user_id = self.user1,
+            song_title = 'testSongTitle',
+            is_public = True,
+            genre = 'RO',
+            tag = 'tag the song',
+            audio_file = self.audioFileUpload,
+            posted_day = timezone.datetime.today(),
+        )
+
+        #set endpoint url
+        self.URL = 'http://testsertver/drfLikes/'
+
+    def testCreateLikes(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "song_id":self.postedSong.song_id,
+                "user_id":self.userId2,
+                "like_casted_day" : timezone.datetime.today(),
+                "like_casted_time" : timezone.datetime.now()
+            },
+            format = None
+        )
+
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+
+    def testCreateLikesWithUnexistingSongId(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "song_id":'22222',
+                "user_id":self.userId2,
+                "like_casted_day" : timezone.datetime.today(),
+                "like_casted_time" : timezone.datetime.now()
+            },
+            format = None
+        )
+        print('print...',response.data)
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
+
+    def testCreateLikesWithUnexistingUserId(self):
+        client = APIClient()
+        response = client.post(
+            path = self.URL,
+            data = {
+                "song_id":self.postedSong.song_id,
+                "user_id":'22222',
+                "like_casted_day" : timezone.datetime.today(),
+                "like_casted_time" : timezone.datetime.now()
+            },
+            format = None
+        )
+
+        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
+
+    def testCreateUnUniqueLikesInstance(self):
+        client = APIClient()
+        fst_response = client.post(
+            path = self.URL,
+            data = {
+                "song_id":self.postedSong.song_id,
+                "user_id":self.userId2,
+                "like_casted_day" : timezone.datetime.today(),
+                "like_casted_time" : timezone.datetime.now()
+            },
+            format = None
+        )
+
+        scd_response = client.post(
+            path = self.URL,
+            data = {
+                "song_id":self.postedSong.song_id,
+                "user_id":self.userId2,
+                "like_casted_day" : timezone.datetime.today(),
+                "like_casted_time" : timezone.datetime.now()
+            },
+            format = None
+        )
+        print('print...',scd_response.data)
+        self.assertEqual(scd_response.status_code,status.HTTP_400_BAD_REQUEST)
+
+class DeleteLikesTestCase(TestCase):
+    def setUp(self):
+        self.user1 = CustomUser.objects.create(
+                username = 'testuser1',
+                email = 'user1@test.com',
+                password = 'testuser1Password'
+        )
+        self.userId1 = CustomUser.objects.get(username='testuser1').id
+
+        self.user2 = CustomUser.objects.create(
+                username = 'testuser2',
+                email = 'user2@test.com',
+                password = 'testuser2Password'
+        )
+        self.userId2 = CustomUser.objects.get(username='testuser2').id
+
+        #set up songs
+        self.audioFile = File(open('mystudio/tests/testAudio.mp3','rb'))
+        self.audioFileUpload = SimpleUploadedFile(
+            name = 'testAudio.mp3',
+            content = b'audioFile'
+        )
+        self.postedSong = PostedSong.objects.create(
+            user_id = self.user1,
+            song_title = 'testSongTitle',
+            is_public = True,
+            genre = 'RO',
+            tag = 'tag the song',
+            audio_file = self.audioFileUpload,
+            posted_day = timezone.datetime.today(),
+        )
+
+        #set up Likes
+        self.likes = Likes.objects.create(
+            song_id = self.postedSong,
+            user_id = self.user2,
+            like_casted_day = timezone.datetime.today(),
+            like_casted_time = timezone.datetime.now()
+        )
+
+        #set endpoint url
+        self.URL = 'http://testsertver/drfLikes/'
+
+    def testDeleteLikes(self):
+        client = APIClient()
+        response = client.delete(
+            path = self.URL + str(self.likes.id),
+            follow = True
+        )
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+
+    def testDeleteLikesWithUnexistingId(self):
+        client = APIClient()
+        response = client.delete(
+            path = self.URL + '33333',
+            follow = True
+        )
+        self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
