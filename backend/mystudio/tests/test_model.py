@@ -203,18 +203,3 @@ class CreateLikesTestCase(TestCase):
         except:
             is_valid = False
         self.assertEqual(is_valid,True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#
