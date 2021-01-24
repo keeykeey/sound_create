@@ -20,9 +20,10 @@ class PostedSong(models.Model):
     genre = models.CharField(
         max_length = 25,
         choices=genreChoices,
+        blank=True,
     )
-    tag = models.CharField(max_length=50)
-    audio_file = models.FileField(default='', upload_to='audio/')
+    tag = models.CharField(max_length=50,blank=True)
+    audio_file = models.FileField(upload_to='audio/')
     posted_day = models.DateTimeField(default=timezone.datetime.today())
     like_casted_user = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
@@ -30,6 +31,9 @@ class PostedSong(models.Model):
         through='Likes',
         related_name='+',
     )
+
+    class Meta:
+        ordering = ['posted_day']
 
     def __str__(self):
         return self.song_title
@@ -42,3 +46,7 @@ class Likes(models.Model):
 
     class Meta:
         unique_together=('song_id','user_id')
+
+
+class TestAudioPost(models.Model):
+    audio_file = models.FileField(default='',upload_to='test/')
