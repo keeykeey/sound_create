@@ -1,6 +1,7 @@
 media/
 media/audio/
-media/image/
+media/images/
+media/test/
 backend/ffmpeg/
 backend/.env
 frontend/services/endPoint.js
