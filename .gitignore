@@ -1,0 +1,8 @@
+media/
+media/audio/
+media/image/
+backend/ffmpeg/
+backend/.env
+frontend/services/endPoint.js
+
+.env
