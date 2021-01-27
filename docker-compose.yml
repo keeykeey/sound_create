@@ -4,11 +4,12 @@ services:
  db:
    image: postgres
    environment:
-     - POSTGRES_DB=sound_create
-     - POSTGRES_USER=shinfujito
-     - POSTGRES_PASSWORD=p@ssword
+     - POSTGRES_DB=${DB_NAME}
+     - POSTGRES_USER=${DB_USER}
+     - POSTGRES_PASSWORD=${DB_PASSWORD}
    ports:
-     - "5432:5432"
+     - ${DB_PORT}
+
  backend:
    build: "./backend/Docker"
    ports:
@@ -28,9 +29,22 @@ services:
    build: "./frontend/Docker"
    volumes:
      -  ./frontend:/workspace
-     -  ./workspace/node_modules
+     -  /workspace/node_modules
    ports:
      - "3000:3000"
    command: npm start
    depends_on:
      - backend
+
+ nginx:
+   image: nginx:latest
+   ports:
+     - 80:8080
+   volumes:
+     -  ./nginx/nginx-proxy.conf:/etc/nginx/conf.d/default.conf:ro
+     -  ./nginx:/var/www/frontend
+   depends_on:
+     - backend
+     - frontend
+# volumes:
+#   ./frontend:
