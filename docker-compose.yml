@@ -1,3 +1,4 @@
+#https://saasitive.com/tutorial/docker-compose-django-react-nginx-let-s-encrypt/
 version: "3"
 
 services:
@@ -20,7 +21,7 @@ services:
    command:
       bash -c "python manage.py makemigrations &&
       python manage.py migrate &&
-      python manage.py runserver 0.0.0.0:8000 "
+      gunicorn sound_create.wsgi --bind 0.0.0.0:8000"
 
    depends_on:
      - db
@@ -32,19 +33,18 @@ services:
      -  /workspace/node_modules
    ports:
      - "3000:3000"
-   command: npm start
+   command: yarn build
+#   command: npm start
    depends_on:
      - backend
 
  nginx:
    image: nginx:latest
    ports:
-     - 80:8080
+     - "8080:80"
    volumes:
-     -  ./nginx/nginx-proxy.conf:/etc/nginx/conf.d/default.conf:ro
-     -  ./nginx:/var/www/frontend
+     -  ./nginx/:/etc/nginx/conf.d/
+     -  ./frontend/build:/var/www
    depends_on:
      - backend
      - frontend
-# volumes:
-#   ./frontend:
