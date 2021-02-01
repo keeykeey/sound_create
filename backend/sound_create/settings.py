@@ -9,7 +9,7 @@ env.read_env(os.path.join(BASE_DIR,'.env'))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -61,8 +61,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1:80',
     'http://127.0.0.1:3000',
-    'http://127.0.0.1:8080',
 )
 
 ROOT_URLCONF = 'sound_create.urls'
