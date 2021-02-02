@@ -11,7 +11,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -62,6 +62,7 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:80',
+    'http://127.0.0.1:81',
     'http://127.0.0.1:3000',
 )
 
