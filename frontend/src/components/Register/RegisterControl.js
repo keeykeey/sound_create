@@ -52,7 +52,6 @@ const RegisterControl = (props)=> {
   const [inputUsername,setInputUsername] = useState('');
   const [inputEmailAdress,setInputEmailAdress] = useState('');
   const [inputPassword1,setInputPassword1] = useState('');
-  const [inputPassword2,setInputPassword2] = useState('');
   const [isAgreedOnCheckbox,setIsAgreedOnCheckbox] = useState(false);
 
   const handleInputUsername = (event) => {
@@ -68,11 +67,6 @@ const RegisterControl = (props)=> {
   const handleInputPassword1 = (event) => {
     const password1 = event.target.value;
     setInputPassword1(password1)
-  }
-
-  const handleInputPassword2 = (event) => {
-    const password2 = event.target.value;
-    setInputPassword2(password2)
   }
 
   const checkPw1AndPw2 = () => {
@@ -156,7 +150,6 @@ const RegisterControl = (props)=> {
               className={Style.form_content}
               id = 'password2'
               type='password'
-              onChange={handleInputPassword2}
               validations = {[required,checkPw1AndPw2]}
               name='password2'
               placeholder='password again'
