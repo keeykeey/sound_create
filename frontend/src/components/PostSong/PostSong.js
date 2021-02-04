@@ -1,5 +1,5 @@
 //https://qiita.com/harumaxy/items/035ee46c82e8211d831c
-import react, {useState,useRef} from 'react'
+import {useState,useRef} from 'react'
 import Style from './PostSong.module.scss'
 import axios from 'axios'
 import endPoint from '../../services/endPoint'
@@ -10,12 +10,12 @@ const PostSongPage = (props) =>{
   return(
     <div>
       <h3>
-        Post you're song
+        Post you're song...
       </h3>
       <hr/>
       <div>
         <div className={Style.form}>
-          <PostSongForm/>
+          <PostSongForm loginId={props.loginId}/>
         </div>
       </div>
     </div>
