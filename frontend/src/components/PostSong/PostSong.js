@@ -28,10 +28,6 @@ const PostSongForm = (props) => {
   const [radioVal,setRadioVal] = useState(false)
   const [genre,setGenre] = useState('')
   const [tag,setTag] = useState('')
-  const [audioFile,setAudioFile]=useState({
-    'name':null,
-    'value':null,
-  })
 
   const handleSongTitleInput = (e)=>{
     setSongTitle(e.target.value)
