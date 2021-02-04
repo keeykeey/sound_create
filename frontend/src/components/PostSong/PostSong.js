@@ -10,12 +10,12 @@ const PostSongPage = (props) =>{
   return(
     <div>
       <h3>
-        Post you're song
+        Post you're song...
       </h3>
       <hr/>
       <div>
         <div className={Style.form}>
-          <PostSongForm/>
+          <PostSongForm loginId={props.loginId}/>
         </div>
       </div>
     </div>
