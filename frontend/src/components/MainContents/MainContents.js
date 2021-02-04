@@ -37,7 +37,7 @@ const pushFavoriteButton = (followerId,followeeId)=>{
             followeeId,
           )
         }})
-  ),[followerId,followeeId]}
+  )}
 
 const cancelFavoriteButton = (
   followerId,
@@ -77,7 +77,7 @@ const pushLikesIcon = (song_id,user_id) =>{
 }
 
 const subtractLikeNumInDb = (song_id,user_id) => {
-  const promiseOnj=axios.get(DRFLIKES_API_URL).then(
+  axios.get(DRFLIKES_API_URL).then(
     res=>res.data.filter(
       key=>String(key.song_id)===String(song_id)
     ).filter(

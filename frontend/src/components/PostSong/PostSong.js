@@ -1,5 +1,5 @@
 //https://qiita.com/harumaxy/items/035ee46c82e8211d831c
-import react, {useState,useRef} from 'react'
+import {useState,useRef} from 'react'
 import Style from './PostSong.module.scss'
 import axios from 'axios'
 import endPoint from '../../services/endPoint'
@@ -28,10 +28,6 @@ const PostSongForm = (props) => {
   const [radioVal,setRadioVal] = useState(false)
   const [genre,setGenre] = useState('')
   const [tag,setTag] = useState('')
-  const [audioFile,setAudioFile]=useState({
-    'name':null,
-    'value':null,
-  })
 
   const handleSongTitleInput = (e)=>{
     setSongTitle(e.target.value)
