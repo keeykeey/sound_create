@@ -403,7 +403,6 @@ const EachUsersPage = (props) =>{
     .then(
       res=>{
         console.log(
-          '3...',
           String(res.data.filter
             (key=>(String(key.followee.username))===(String(followeeName)))[0].followee.username)===String(followeeName)
           );
@@ -420,7 +419,6 @@ const EachUsersPage = (props) =>{
   useEffect(()=>{
     axios.get(DRFCUSTOMUSER_API_URL+'?username='+String(followeeName))
     .then(res=>{
-      console.log('res......',res.data[0].id)
       setFolloweeId(res.data[0].id)
     })
     .catch(error=>console.log('error...',error))
