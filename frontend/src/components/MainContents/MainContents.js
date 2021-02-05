@@ -93,7 +93,6 @@ const PutChannelRegisterButton = (
   isFollowing,
   loginId,
   followeeId,
-  props,
 ) => {
   if(isFollowing){
     return(
@@ -427,15 +426,15 @@ const EachUsersPage = (props) =>{
         isFollowing,
         props.loginId,
         followeeId,
-        props,
       )}</div>
       <hr/>
-      <ul>
+      <ul key={song.song_id}>
         {song.map(
           song=>SongGridItemForFavorite(
             song.song_title,
             song.audio_file,
             song.user_id.username,
+            song.user_id.id,
             props.loginId,
             song.song_id,
             likes.filter(key=>String(key.song_id)===String(song.song_id)).length,
