@@ -402,10 +402,6 @@ const EachUsersPage = (props) =>{
     axios.get(DRFUSERRELATION_API_URL_FORVIEW + '?follower='+ String(props.loginId))
     .then(
       res=>{
-        console.log(
-          String(res.data.filter
-            (key=>(String(key.followee.username))===(String(followeeName)))[0].followee.username)===String(followeeName)
-          );
         setIsFollowing(
           String(res.data.filter
             (key=>(String(key.followee.username))===(String(followeeName)))[0].followee.username)===String(followeeName)
