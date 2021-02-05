@@ -1,9 +1,7 @@
 import axios from 'axios';
 
 const DRFCUSTOMUSER_API_URL = 'http://localhost:8000/user/drfcustomuser/'
-const DRFPOSTSONG_API_URL = 'http://localhost:8000/drfPostSong/'
 const JWT_API_URL = 'http://localhost:8000/api/auth/jwt/';
-const TOKEN = 'Token 686f3dcae81cfe82ec6c84fc8f2ab0a953a9fd05'
 
 const register = (username,email,password) => {
   return axios.post(DRFCUSTOMUSER_API_URL,{
@@ -14,9 +12,9 @@ const register = (username,email,password) => {
 };
 
 const getUserId = (username) => {
-  const user_id = axios.get(DRFCUSTOMUSER_API_URL)
+  axios.get(DRFCUSTOMUSER_API_URL)
   .then(res => {
-    const user_id = res.data.filter(key=>key.username==username)[0]['id'];
+    const user_id = res.data.filter(key=>String(key.username)===String(username))[0]['id'];
     localStorage.setItem('user_id',user_id);
   },[])
 }
