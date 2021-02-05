@@ -295,8 +295,8 @@ const SortByUser = (props) => {
 }
 
 const SortByGenre = (props) => {
-  const [song,setSong] = useState([])
-  const [like,setLike] = useState([])
+  const [song,setSong] = useState([])// eslint-disable-line
+  const [like,setLike] = useState([])// eslint-disable-line
   const [userRelations,setUserRelations] = useState([])//add
 
   useEffect(()=>{
