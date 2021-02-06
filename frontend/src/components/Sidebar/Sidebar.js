@@ -13,7 +13,7 @@ const Sidebar = (props) => {
       res=>{
         setUserRelations(res.data)
       })
-  })
+  },[])
 
   return(
       <div>
