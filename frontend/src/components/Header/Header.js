@@ -23,12 +23,6 @@ const Header = () => {
       <div className={ Style.item }>
         <Link className={ Style.headerText } to ='/'>Sound_Create</Link>
       </div>
-      <div className={ Style.item }>
-        <form>
-          <input type='text' placeholder='search'/>
-          <button type='submit'><i className="fas fa-search"></i></button>
-        </form>
-      </div>
       <div className={ Style.item}>
         { getGreeting(auth_username) }
       </div>

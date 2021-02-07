@@ -8,7 +8,6 @@
   left:0;
   top:0;
   display: flex;
-  height:56px;
   width:100%;
   background-color: #303530;
   color: white;
@@ -22,10 +21,7 @@
   }
  .item{
    &:first-child{
-     flex-grow:9;
-   }
-   &:nth-child(2){
-     flex-grow:10;
+     flex-grow:4;
    }
    &:last-child{
      flex-grow:1;
