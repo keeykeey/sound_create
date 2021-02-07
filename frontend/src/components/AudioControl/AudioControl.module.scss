@@ -1,3 +1,26 @@
+.row{
+  display:flex;
+  flex-direction:row;
+}
+
+.col{
+  display:flex;
+  flex-direction:column;
+}
+
+.audioCurrentTime{
+  margin:5px 0 5px 0;
+}
+
+.betweenTimes{
+  margin:5px 2px 5px 2px;
+
+}
+
+.audioDuration{
+  margin:5px 0 5px 0;
+}
+
 .stopButton{
   margin : 0 5px 0 0;
   width : 30px;

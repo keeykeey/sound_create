@@ -9,8 +9,20 @@ function roundNumberDown(number,n){
   }
 }
 
+function convertSecondsToMinutes_string(number){
+  const integerNumber = roundNumberDown(number,0)
+  const minutes = String(integerNumber / 60).split('.')[0]
+  const seconds = String(integerNumber % 60)
+  if (seconds.length === 1){
+    return String(minutes) + ':0' + String(seconds)
+  }else if(seconds.length===2){
+    return String(minutes) + ':' + String(seconds)
+  }
+}
+
 const myMath = {
-  roundNumberDown
+  roundNumberDown,
+  convertSecondsToMinutes_string
 }
 
 export default myMath
