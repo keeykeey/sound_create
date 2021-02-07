@@ -1,28 +1,63 @@
 import {useState} from 'react';
 import Style from './AudioControl.module.scss';
+import myMath from '../../mylibrary/myMath'
 
-const AudioControl_pre = (
-   audioFilePath
+const AudioControl = (
+  song_id,
+  audioFilePath
 )=>{
-  const playAudio = () => {
-    console.log(String(audioFilePath))
-    const audio = new Audio();
-    audio.src = audioFilePath;
-    audio.volume = 0.6;
-    audio.load();
-    audio.play();
+  let is_playing = false;
+  const defaultAudioVolume = 0.5
+
+function stopAudio(){
+  const audioElement = document.querySelector('#audioTagIdOfSong'+String(song_id));
+  audioElement.pause();
+  audioElement.currentTime = 0
+  is_playing = false;
+}
+
+  function playAndPauseAudio(){
+    const audioElement = document.querySelector('#audioTagIdOfSong'+String(song_id));
+    audioElement.volume = defaultAudioVolume;
+    if (is_playing === false){
+      console.log(audioElement.currentTime)
+      audioElement.play();
+      is_playing = true;
+    }else if(is_playing === true){
+      audioElement.pause()
+      is_playing = false;
+    }
   }
+
+  function handleChangeAudioVolume(event){
+    const value = event.target.value;
+    const audioElement = document.querySelector('#audioTagIdOfSong'+String(song_id));
+    audioElement.volume = myMath.roundNumberDown(Number(value)/100,2)
+  }
+
   return(
-    <button
-      id={audioFilePath}
-      onClick={playAudio}
-    >
-      this audio control:{audioFilePath}
-    </button>
+    <div>
+      <button
+      className = {Style.stopButton}
+      onClick = {stopAudio}
+      ><i className="fas fa-stop"></i></button>
+      <button
+        className = {Style.playOrPauseButton}
+        onClick={playAndPauseAudio}
+      ><i className="fas fa-pause"/> / <i className="fas fa-play"/></button>
+      <i className="fas fa-volume-up"></i>
+      <input
+        type='range'
+        className = {Style.audioVolumeAdjuster}
+        min='0'
+        max='100'
+        onChange={handleChangeAudioVolume}
+        />
+    </div>
   )
 }
 
-const AudioControl = (
+const AudioControl_api = (
   song_id,
   audioFilePath
 )=>{
@@ -59,7 +94,7 @@ const AudioControl = (
       data-playing='false'
       role='switch'
       aria-checked='false'
-    ><span>Play / Pause</span></button>
+    ><i className="fas fa-pause"/> / <i className="fas fa-play"/></button>
   )
 }
 
