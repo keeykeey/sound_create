@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import Style from './MainContents.module.scss';
 import {Link} from 'react-router-dom';
+import AudioControl from '../AudioControl/AudioControl';
 import axios from 'axios';
 import endPoint from '../../services/endPoint';
 
@@ -134,7 +135,15 @@ const SongGridItemForPublic = (
   <div className={Style.eachSongBlock}>
     <div className={Style.item}>
       <div className={Style.songTitle} >{song_title} </div>
-      <audio className={Style.audio} src={String(audio_file)} controls/>
+      <audio id = {'audioTagIdOfSong'+song_id}
+             className={Style.audio}
+             src={String(audio_file)}
+             />
+      <div>
+        {AudioControl(
+          song_id,
+          audio_file)}
+      </div>
       <div className={Style.userName} >
         user_name : {user_name}
         <Link to={'/'+user_name}>
@@ -161,7 +170,15 @@ const SongGridItemForPrivate = (
     <div className={Style.eachSongBlock}>
       <div className={Style.item}>
         <div className={Style.songTitle} >{song_title} </div>
-        <audio className={Style.audio} src={String(audio_file)} controls/>
+        <audio id = {'audioTagIdOfSong'+song_id}
+               className={Style.audio}
+               src={String(audio_file)}
+               />
+        <div>
+          {AudioControl(
+            song_id,
+            audio_file)}
+        </div>
         <br/>
         <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
           <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
@@ -185,7 +202,15 @@ const SongGridItemForFavorite = (
   <div className={Style.eachSongBlock}>
     <div className={Style.item}>
       <div className={Style.songTitle} >{song_title} </div>
-      <audio className={Style.audio} src={String(audio_file)} controls/>
+      <audio id = {'audioTagIdOfSong'+song_id}
+             className={Style.audio}
+             src={String(audio_file)}
+             />
+      <div>
+        {AudioControl(
+          song_id,
+          audio_file)}
+      </div>
       <div className={Style.userName} >
         user_name : {user_name}
       </div>
@@ -389,8 +414,7 @@ const EachUsersPage = (props) =>{
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL_FORVIEW)
     .then(res=>{setSong(res.data.filter(key=>String(key.user_id.username)===String(followeeName)))})
-  },[followeeName,]
-  );
+  },[followeeName,]);
 
   useEffect(()=>{
     axios.get(DRFLIKES_API_URL)
