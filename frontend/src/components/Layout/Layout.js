@@ -12,8 +12,8 @@ const loginId = localStorage.getItem('user_id');
 
 const HomeLayout = (props)=>{
   return(
-    <div>
-      <div className={Style.topSide}>
+    <div className={Style.col}>
+      <div className={Style.topSize}>
         <Header/>
       </div>
       <div className = {Style.row}>
