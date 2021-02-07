@@ -1,7 +1,6 @@
 import React from 'react';
 import Style from './LogoutControl.module.scss';
 import AuthService from '../../services/auth.service.js';
-import Form from 'react-validation/build/form';
 import {withRouter} from 'react-router-dom';//to enable props.history.push
 
 const LogoutControl = (props) => {
