@@ -61,7 +61,7 @@ const AudioControl = (
         <div
           className={Style.audioDuration}
           id = {'durationOfSong'+String(song_id)}
-          ></div>
+          >0:00</div>
       </div>
       <div>
         <button
