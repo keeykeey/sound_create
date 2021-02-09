@@ -21,7 +21,7 @@ services:
    command:
       bash -c "python manage.py makemigrations &&
       python manage.py migrate &&
-      python3 manage.py collectstatic &&
+      #python3 manage.py collectstatic --noinput &&
       gunicorn sound_create.wsgi --bind 0.0.0.0:8000"
 
    depends_on:
