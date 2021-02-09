@@ -11,7 +11,13 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+if DEBUG:
+    ALLOWED_HOSTS = []
+else :
+    ALLOWED_HOSTS = [
+        '3.114.183.42',
+        'www.keeykeey.com'
+    ]
 
 # Application definition
 INSTALLED_APPS = [
@@ -59,11 +65,22 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ORIGIN_WHITELIST = (
-    'http://127.0.0.1:80',
-    'http://127.0.0.1:81',
-    'http://127.0.0.1:3000',
-)
+if DEBUG:
+    CORS_ORIGIN_WHITELIST = (
+        'http://127.0.0.1:80',
+        'http://127.0.0.1:88',
+        'http://127.0.0.1:3000',
+    )
+else :
+    CORS_ORIGIN_WHITELIST = (
+        'http://{}:80'.format(env('PUBLIC_IP')),
+        'http://{}:88'.format(env('PUBLIC_IP')),
+        'http://{}:3000'.format(env('PUBLIC_IP')),
+        'https://www.keeykeey.com:80',
+        'https://www.keeykeey.com:88',
+        'https://www.keeykeey.com:3000',
+    )
+
 
 ROOT_URLCONF = 'sound_create.urls'
 
@@ -141,18 +158,14 @@ AUTH_USER_MODEL = 'user.CustomUser'
 PROJECT_NAME = os.path.basename(BASE_DIR)
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/audio/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,'static')
-]
-
-STATIC_ROOT = '/var/www/{}/static'.format(PROJECT_NAME)
-
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-#MEDIA_ROOT = '/var/www/{}/MEDIA'.format(PROJECT_NAME) #when debug = False
-
-MEDIA_URL = '/media/'
+if DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR,'static')
+    MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+else:
+    STATIC_ROOT = '/var/www/{}/static'.format(PROJECT_NAME)
+    #MEDIA_ROOT = os.path.join(BASE_DIR,'media/')
+    MEDIA_ROOT = '/var/www/{}/media'.format(PROJECT_NAME)
 
 LOGIN_URL = 'login'
-
-X_FRAME_OPTIONS = 'SAMEORIGIN' # added for using django_plotly_dash https://pypi.org/project/django-plotly-dash/
