@@ -164,8 +164,9 @@ if DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR,'static')
     MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 else:
-    STATIC_ROOT = '/var/www/{}/static'.format(PROJECT_NAME)
-    ##MEDIA_ROOT = os.path.join(BASE_DIR,'media/')
-    MEDIA_ROOT = '/var/www/{}/media'.format(PROJECT_NAME)
+    STATIC_ROOT = '/home/ubuntu/{}/backend/static'.format(PROJECT_NAME)
+    #STATIC_ROOT = '/var/www/{}/static'.format(PROJECT_NAME)
+    MEDIA_ROOT = '/home/ubuntu/{}/backend/media'.format(PROJECT_NAME)
+    #MEDIA_ROOT = '/var/www/{}/media'.format(PROJECT_NAME)
 
 LOGIN_URL = 'login'
