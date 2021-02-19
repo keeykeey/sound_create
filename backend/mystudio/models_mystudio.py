@@ -23,7 +23,7 @@ class PostedSong(models.Model):
         blank=True,
     )
     tag = models.CharField(max_length=50,blank=True)
-    audio_file = models.FileField(upload_to='audio/')
+    audio_file = models.FileField(upload_to='audio/')#settings.MEDIA_ROOTのupload_to配下に格納される
     posted_day = models.DateTimeField(default=timezone.datetime.today())
     like_casted_user = models.ManyToManyField(
         settings.AUTH_USER_MODEL,

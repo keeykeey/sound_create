@@ -9,15 +9,15 @@ env.read_env(os.path.join(BASE_DIR,'.env'))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = env('DEBUG')
 
-if DEBUG:
-    ALLOWED_HOSTS = []
-else :
-    ALLOWED_HOSTS = [
-        '3.114.183.42',
-        'www.keeykeey.com'
-    ]
+ALLOWED_HOSTS = [
+    '*',
+    'django',
+    #'127.0.0.1',
+    #env('PUBLIC_IP'),
+    #'www.keeykeey.com'
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -29,30 +29,30 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mystudio',
     'user',
-    'media',
     'rest_framework',#added for django rest frameworks
     'rest_framework.authtoken',#added for django rest frameworks
     'djoser',#added for JWT-auth endpoint
-    'corsheaders',#added for django rest framework
-    'django_filters' #for adding filtering function on endpoint through url
+    'corsheaders'#,added for django rest framework
+    #'django_filters' #for adding filtering function on endpoint through url
 ]
 
 #added below for JWT-auth
 from datetime import timedelta
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':[
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+    #'DEFAULT_AUTHENTICATION_CLASSES':[
+    #    'rest_framework_simplejwt.authentication.JWTAuthentication',
+    #],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
 }
 
-SIMPLE_JWT = {
-    'AHTU_HEADER_TYPES':('JWT',),
-    'ACCESS_TOKEN_LIFETIME':timedelta(minutes=30),
-    'USER_ID_CLAIM':'id',
-}
+#SIMPLE_JWT = {
+    #'AHTU_HEADER_TYPES':('JWT',),
+#    'AUTH_HEADER_TYPES':('JWT',),
+#    'ACCESS_TOKEN_LIFETIME':timedelta(minutes=30),
+#    'USER_ID_CLAIM':'id',
+#}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -65,29 +65,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if DEBUG:
-    CORS_ORIGIN_WHITELIST = (
-        'http://127.0.0.1:80',
-        'http://127.0.0.1:88',
-        'http://127.0.0.1:3000',
-    )
-else :
-    CORS_ORIGIN_WHITELIST = (
-        'http://{}:80'.format(env('PUBLIC_IP')),
-        'http://{}:88'.format(env('PUBLIC_IP')),
-        'http://{}:3000'.format(env('PUBLIC_IP')),
-        'https://www.keeykeey.com:80',
-        'https://www.keeykeey.com:88',
-        'https://www.keeykeey.com:3000',
-    )
-
+CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1',
+    'http://127.0.0.1:3000',
+    #'http://{}:80'.format(env('PUBLIC_IP')),
+    #'https://www.keeykeey.com:80',
+)
 
 ROOT_URLCONF = 'sound_create.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR,'templates','media'],
+        'DIRS': [BASE_DIR,'staticfiles','media'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -95,7 +85,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.media',
+                #'django.template.context_processors.media',
+                #'django.template.context_processors.static',
             ],
         },
     },
@@ -106,16 +97,24 @@ WSGI_APPLICATION = 'sound_create.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': env('DB_ENGINE'),
+#        'NAME': env('DB_NAME'),
+#        'USER': env('DB_USER'),
+#        'PASSWORD': env('DB_PASSWORD'),
+#        'HOST': env('DB_HOST'),
+#        'PORT': env('DB_PORT'),
+#    }
+#}
+
 DATABASES = {
-    'default': {
-        'ENGINE': env('DB_ENGINE'),
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
+    'default':{
+        'ENGINE':'django.db.backends.sqlite3',
+        'NAME':os.path.join(BASE_DIR,'db.sqlite3')
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -157,16 +156,17 @@ AUTH_USER_MODEL = 'user.CustomUser'
 
 PROJECT_NAME = os.path.basename(BASE_DIR)
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/audio/'
+STATIC_ROOT = '/staticfiles/'
+MEDIA_ROOT = '/media/'
 
-if DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR,'static')
-    MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-else:
-    STATIC_ROOT = '/home/ubuntu/{}/backend/static'.format(PROJECT_NAME)
-    #STATIC_ROOT = '/var/www/{}/static'.format(PROJECT_NAME)
-    MEDIA_ROOT = '/home/ubuntu/{}/backend/media'.format(PROJECT_NAME)
-    #MEDIA_ROOT = '/var/www/{}/media'.format(PROJECT_NAME)
+#if DEBUG:
+#    STATIC_ROOT = os.path.join(BASE_DIR,'static/')
+#    MEDIA_ROOT = os.path.join(BASE_DIR,'media/')
+#else:
+#    STATIC_ROOT = os.path.join(BASE_DIR,'static/')
+#    MEDIA_ROOT = os.path.join(BASE_DIR,'media/')
+
+STATIC_URL = '/staticfiles/'
+MEDIA_URL = '/media/'
 
 LOGIN_URL = 'login'
