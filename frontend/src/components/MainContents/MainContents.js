@@ -272,7 +272,7 @@ const Public = (props) => {
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL_FORVIEW)
-    .then(res=>{setSong(res.data)})
+    .then(res=>{setSong(res.data)}).catch(console.log('error...'))
   },[]);
 
   useEffect(()=>{

@@ -56,7 +56,7 @@ const AudioControl = (
         <div
           className={Style.audioCurrentTime}
           id = {'currentTimeOfSong'+String(song_id)}
-          >0:00</div>
+          >0:00</div>{audioFilePath}
         <div className = {Style.betweenTimes}>  / </div>
         <div
           className={Style.audioDuration}

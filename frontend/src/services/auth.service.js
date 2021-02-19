@@ -1,7 +1,8 @@
 import axios from 'axios';
+import endPoint from './endPoint';
 
-const DRFCUSTOMUSER_API_URL = 'http://localhost:8000/user/drfcustomuser/'
-const JWT_API_URL = 'http://localhost:8000/api/auth/jwt/';
+const DRFCUSTOMUSER_API_URL = endPoint.getCustomUserUrl();
+const JWT_API_URL = endPoint.getJwtUrl();
 
 const register = (username,email,password) => {
   return axios.post(DRFCUSTOMUSER_API_URL,{

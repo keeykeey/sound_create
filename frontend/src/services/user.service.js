@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = 'http:localhost:8000/api/test';
+const API_URL = 'http:127.0.0.1/api/test';
 const TOKEN = 'Token 686f3dcae81cfe82ec6c84fc8f2ab0a953a9fd05';
 
 const getPublicContent = () => {
@@ -26,9 +26,3 @@ export default{
   getModeratorBoard,
   getAdminBoard,
 };
-
-
-
-
-
-export default new UserService();
