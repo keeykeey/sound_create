@@ -1,50 +1,43 @@
-#https://saasitive.com/tutorial/docker-compose-django-react-nginx-let-s-encrypt/
-version: "3"
+version: "3.7"
 
 services:
- db:
-   image: postgres
-   environment:
-     - POSTGRES_DB=${DB_NAME}
-     - POSTGRES_USER=${DB_USER}
-     - POSTGRES_PASSWORD=${DB_PASSWORD}
-   ports:
-     - ${DB_PORT}
-
  backend:
-   build: "./backend/Docker"
+   build:
+     context: .
+     dockerfile: ./DockerfileBackend
+   volumes:
+     - staticfiles:/staticfiles
+     - media:/media
    ports:
      - "8000:8000"
-   volumes:
-     - ./backend:/workspace
-
-   command:
-      bash -c "python manage.py makemigrations &&
-      python manage.py migrate &&
-      #python3 manage.py collectstatic --noinput &&
-      gunicorn sound_create.wsgi --bind 0.0.0.0:8000"
-
-   depends_on:
-     - db
 
  frontend:
-   build: "./frontend/Docker"
+   build:
+     context: ./frontend/Docker/
+     dockerfile: DockerfileFrontend
    volumes:
-     -  ./frontend:/workspace
-     -  /workspace/node_modules
+     -  ./frontend:/dockerFrontend
+     -  /dockerFrontend/node_modules
+     -  build_folder:/dockerFrontend/build
+   command: yarn build
    ports:
      - "3000:3000"
-   command: yarn build
-   depends_on:
-     - backend
 
  nginx:
-   image: nginx:latest
+   build:
+     context: ./nginx/
+     dockerfile: DockerfileNginx
+   volumes:
+     -  build_folder:/var/www/
+     -  staticfiles:/staticfiles
+     -  media:/media
    ports:
      - "80:80"
-   volumes:
-     -  ./nginx/:/etc/nginx/conf.d/
-     -  ./frontend/build:/var/www
    depends_on:
      - backend
      - frontend
+
+volumes:
+  build_folder:
+  staticfiles:
+  media:
