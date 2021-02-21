@@ -94,7 +94,14 @@ const RegisterControl = (props)=> {
     if (isAgreedOnCheckbox){
       AuthService.register(inputUsername,inputEmailAdress,inputPassword1).then(
         (response) => {
-        },
+          console.log('registerd')
+          AuthService.login(inputUsername,inputPassword1).then(
+            AuthService.getUserId(inputUsername)
+          ).then(()=>{
+              props.history.push('/');
+              window.location.reload();
+            })
+          },
         (error) => {
             const askForValidInput = document.querySelector('#askForValidInput')
             askForValidInput.innerHTML='入力内容が有効ではありません。'
