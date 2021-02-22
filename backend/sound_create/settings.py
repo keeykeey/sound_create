@@ -13,7 +13,7 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = [
     '*',
-    'django',
+    'django',#nginxのupstreamにdjangoと命名したので、ここにもdjangoと書く
     #'127.0.0.1',
     #env('PUBLIC_IP'),
     #'www.keeykeey.com'
@@ -32,8 +32,8 @@ INSTALLED_APPS = [
     'rest_framework',#added for django rest frameworks
     'rest_framework.authtoken',#added for django rest frameworks
     'djoser',#added for JWT-auth endpoint
-    'corsheaders'#,added for django rest framework
-    #'django_filters' #for adding filtering function on endpoint through url
+    'corsheaders',#,added for django rest framework
+    'django_filters' #for adding filtering function on endpoint through url
 ]
 
 #added below for JWT-auth
@@ -67,7 +67,6 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1',
-    'http://127.0.0.1:3000',
     #'http://{}:80'.format(env('PUBLIC_IP')),
     #'https://www.keeykeey.com:80',
 )
@@ -77,7 +76,7 @@ ROOT_URLCONF = 'sound_create.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR,'staticfiles','media'],
+        'DIRS': [BASE_DIR,'templates','staticfiles','media'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -157,7 +156,7 @@ AUTH_USER_MODEL = 'user.CustomUser'
 PROJECT_NAME = os.path.basename(BASE_DIR)
 
 STATIC_ROOT = '/staticfiles/'
-MEDIA_ROOT = '/media/'
+MEDIA_ROOT = '/mediafiles/'
 
 #if DEBUG:
 #    STATIC_ROOT = os.path.join(BASE_DIR,'static/')
@@ -167,6 +166,6 @@ MEDIA_ROOT = '/media/'
 #    MEDIA_ROOT = os.path.join(BASE_DIR,'media/')
 
 STATIC_URL = '/staticfiles/'
-MEDIA_URL = '/media/'
+MEDIA_URL = '/mediafiles/'
 
 LOGIN_URL = 'login'

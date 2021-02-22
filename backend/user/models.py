@@ -8,6 +8,7 @@ from mystudio.models_mystudio import PostedSong,Likes
 from django.utils import timezone
 
 class CustomUser(AbstractUser):
+    icon = models.ImageField(upload_to='icon',default='icon/default.png')
     followers = models.ManyToManyField(
         settings.AUTH_USER_MODEL,verbose_name='users follow you',through='UserRelations',
         related_name = '+',through_fields=('followee','follower')#through_fields(source,target)
