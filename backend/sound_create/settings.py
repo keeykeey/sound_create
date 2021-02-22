@@ -12,11 +12,8 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = [
-    '*',
-    'django',#nginxのupstreamにdjangoと命名したので、ここにもdjangoと書く
-    #'127.0.0.1',
-    #env('PUBLIC_IP'),
-    #'www.keeykeey.com'
+    '127.0.0.1',
+    'www.keeykeey.com',
 ]
 
 # Application definition
@@ -67,8 +64,7 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1',
-    #'http://{}:80'.format(env('PUBLIC_IP')),
-    #'https://www.keeykeey.com:80',
+    'https://www.keeykeey.com',
 )
 
 ROOT_URLCONF = 'sound_create.urls'
@@ -76,7 +72,7 @@ ROOT_URLCONF = 'sound_create.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR,'templates','staticfiles','media'],
+        'DIRS': [BASE_DIR,'templates','staticfiles','mediafiles'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -96,23 +92,23 @@ WSGI_APPLICATION = 'sound_create.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': env('DB_ENGINE'),
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
-    }
-}
-
 #DATABASES = {
-#    'default':{
-#        'ENGINE':'django.db.backends.sqlite3',
-#        'NAME':os.path.join(BASE_DIR,'db.sqlite3')
+#    'default': {
+#        'ENGINE': env('DB_ENGINE'),
+#        'NAME': env('DB_NAME'),
+#        'USER': env('DB_USER'),
+#        'PASSWORD': env('DB_PASSWORD'),
+#        'HOST': env('DB_HOST'),
+#        'PORT': env('DB_PORT'),
 #    }
 #}
+
+DATABASES = {
+    'default':{
+        'ENGINE':'django.db.backends.sqlite3',
+        'NAME':os.path.join(BASE_DIR,'db.sqlite3')
+    }
+}
 
 
 # Password validation
