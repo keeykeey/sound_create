@@ -13,6 +13,7 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
+    'django',
     'www.keeykeey.com',
 ]
 
@@ -92,23 +93,23 @@ WSGI_APPLICATION = 'sound_create.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': env('DB_ENGINE'),
-#        'NAME': env('DB_NAME'),
-#        'USER': env('DB_USER'),
-#        'PASSWORD': env('DB_PASSWORD'),
-#        'HOST': env('DB_HOST'),
-#        'PORT': env('DB_PORT'),
-#    }
-#}
-
 DATABASES = {
-    'default':{
-        'ENGINE':'django.db.backends.sqlite3',
-        'NAME':os.path.join(BASE_DIR,'db.sqlite3')
+    'default': {
+        'ENGINE': env('DB_ENGINE'),
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
+
+#DATABASES = {
+#    'default':{
+#        'ENGINE':'django.db.backends.sqlite3',
+#        'NAME':os.path.join(BASE_DIR,'db.sqlite3')
+#    }
+#}
 
 
 # Password validation
