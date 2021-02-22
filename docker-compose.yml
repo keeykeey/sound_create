@@ -7,7 +7,7 @@ services:
      dockerfile: ./DockerfileBackend
    volumes:
      - staticfiles:/staticfiles
-     - media:/media
+     - mediafiles:/mediafiles
    ports:
      - "8000:8000"
 
@@ -28,9 +28,9 @@ services:
      context: ./nginx/
      dockerfile: DockerfileNginx
    volumes:
-     -  build_folder:/var/www/
-     -  staticfiles:/staticfiles
-     -  media:/media
+     - build_folder:/var/www/
+     - staticfiles:/staticfiles
+     - mediafiles:/mediafiles
    ports:
      - "80:80"
    depends_on:
@@ -40,4 +40,4 @@ services:
 volumes:
   build_folder:
   staticfiles:
-  media:
+  mediafiles:
