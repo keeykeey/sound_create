@@ -2,8 +2,7 @@ import Style from './AudioControl.module.scss';
 import myMath from '../../mylibrary/myMath'
 
 const AudioControl = (
-  song_id,
-  audioFilePath
+  song_id
 )=>{
   let is_playing = false;
   const defaultAudioVolume = 0.5
@@ -56,7 +55,7 @@ const AudioControl = (
         <div
           className={Style.audioCurrentTime}
           id = {'currentTimeOfSong'+String(song_id)}
-          >0:00</div>{audioFilePath}
+          >0:00</div>
         <div className = {Style.betweenTimes}>  / </div>
         <div
           className={Style.audioDuration}

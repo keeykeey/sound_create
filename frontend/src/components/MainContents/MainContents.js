@@ -131,18 +131,18 @@ const SongGridItemForPublic = (
   song_id,
   likes_count,
 )=>{
+  const audioFilePath = String(audio_file).replace('https://','').replace('http://','')
+
   return(
   <div className={Style.eachSongBlock}>
     <div className={Style.item}>
       <div className={Style.songTitle} >{song_title} </div>
       <audio id = {'audioTagIdOfSong'+song_id}
              className={Style.audio}
-             src={String(audio_file)}
+             src={String(audioFilePath)}
              />
       <div>
-        {AudioControl(
-          song_id,
-          audio_file)}
+        {AudioControl(song_id)}
       </div>
       <div className={Style.userName} >
         user_name : {user_name}
@@ -166,18 +166,18 @@ const SongGridItemForPrivate = (
   song_id,
   likes_count,
 )=>{
+  const audioFilePath = String(audio_file).replace('https://','').replace('http://','')
+
   return(
     <div className={Style.eachSongBlock}>
       <div className={Style.item}>
         <div className={Style.songTitle} >{song_title} </div>
         <audio id = {'audioTagIdOfSong'+song_id}
                className={Style.audio}
-               src={String(audio_file)}
+               src={String(audioFilePath)}
                />
         <div>
-          {AudioControl(
-            song_id,
-            audio_file)}
+          {AudioControl(song_id)}
         </div>
         <br/>
         <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
@@ -198,18 +198,18 @@ const SongGridItemForFavorite = (
   song_id,
   likes_count,
 )=>{
+  const audioFilePath = String(audio_file).replace('https://','').replace('http://','')
+
   return(
   <div className={Style.eachSongBlock}>
     <div className={Style.item}>
       <div className={Style.songTitle} >{song_title} </div>
       <audio id = {'audioTagIdOfSong'+song_id}
              className={Style.audio}
-             src={String(audio_file)}
+             src={String(audioFilePath)}
              />
       <div>
-        {AudioControl(
-          song_id,
-          audio_file)}
+        {AudioControl(song_id)}
       </div>
       <div className={Style.userName} >
         user_name : {user_name}
