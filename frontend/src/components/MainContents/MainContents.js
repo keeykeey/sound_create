@@ -371,13 +371,13 @@ const Mypage = (props) => {
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL_FORVIEW)
-  .then(res=>{setSong(res.data.filter(key=>String(key.user_id.id)===String(props.loginId)))})
-},[props.loginId]);
+    .then(res=>{setSong(res.data.filter(key=>String(key.user_id.id)===String(props.loginId)))})
+  },[props.loginId]);
 
-useEffect(()=>{
-  axios.get(DRFLIKES_API_URL)
-  .then(res=>{setLike(res.data)})
-},[]);
+  useEffect(()=>{
+    axios.get(DRFLIKES_API_URL)
+    .then(res=>{setLike(res.data)})
+  },[]);
 
   return(
     <div>
