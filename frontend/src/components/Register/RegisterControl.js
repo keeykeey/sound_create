@@ -33,7 +33,7 @@ const validUsername = (value) => {
         4文字以上かつ20文字以内で入力してください。
       </div>
     )
-  }else(console.log('ここにユーザ名がユニーク出なかった場合の処理をかく'))
+  }
 };
 
 const validPassword = (value) => {
@@ -104,7 +104,11 @@ const RegisterControl = (props)=> {
           },
         (error) => {
             const askForValidInput = document.querySelector('#askForValidInput')
-            askForValidInput.innerHTML='入力内容が有効ではありません。'
+            if (String(error.response.data.username)==='この項目は一意でなければなりません。'){
+              askForValidInput.innerHTML='このユーザー名は既に使用されています。'
+            }else if(String(error.response.data.email)==='この項目は一意でなければなりません。'){
+              askForValidInput.innerHTML='このメールアドレスは既に使用されています。'
+            }
         }
       );
     }else{
