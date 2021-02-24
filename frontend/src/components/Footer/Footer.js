@@ -5,9 +5,7 @@ const Footer = () => {
   return(
     <div className = {Style.background}>
       <div className={Style.row_directed_display}>
-        <p className={Style.text_inside}><a href='/'> 利用規約</a></p>
-        <p className={Style.text_inside}><a href='/'> プライバシー規約</a></p>
-        <p className={Style.text_inside}><a href='/'> ヘルプ</a></p>
+        <p className={Style.text_inside}><a href='/#/terms'> 利用規約</a></p>
       </div>
     </div>
   )

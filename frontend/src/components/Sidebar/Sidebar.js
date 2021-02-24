@@ -41,6 +41,12 @@ const Sidebar = (props) => {
         <div className={Style.logout}>
           <LogoutControl/>
         </div>
+
+        <div className={Style.usageGuide}>
+          <Link to='/terms'>
+            <button className={Style.button} > 利用規約 </button>
+          </Link>
+        </div>
       </div>
   )
 }

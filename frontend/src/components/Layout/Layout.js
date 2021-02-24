@@ -3,6 +3,7 @@ import Style from './Layout.module.scss'
 import Header from '../Header/Header'
 import Sidebar from '../Sidebar/Sidebar'
 import MainContents from '../MainContents/MainContents'
+import Terms from '../MainContents/Terms'
 import Login from '../../pages/Login'
 import PostSong from '../PostSong/PostSong'
 import { HashRouter as Router, Route, Switch} from 'react-router-dom'
@@ -38,8 +39,11 @@ const HomeLayout = (props)=>{
               <Route exact path={'/mypage/'+loginName+'/mypost/'}>
                 <PostSong.PostSongPage loginName={loginName} loginId={loginId}/>
               </Route>
-              <Route exact path='/:followeeName'>
+              <Route exact path='/owner/:followeeName'>
                 <MainContents.EachUsersPage  loginName={loginName} loginId={loginId}/>
+              </Route>
+              <Route exact path='/terms'>
+                <Terms.AllService  loginName={loginName} loginId={loginId}/>
               </Route>
 
               <Route>

@@ -146,7 +146,7 @@ const SongGridItemForPublic = (
       </div>
       <div className={Style.userName} >
         user_name : {user_name}
-        <Link to={'/'+user_name}>
+        <Link to={'/owner/'+user_name}>
           <button className={Style.linkToEachUsersPage}> チャンネルへ移動 </button>
         </Link>
       </div>
@@ -445,7 +445,7 @@ const EachUsersPage = (props) =>{
 
   return (
     <div>
-      <h3> {followeeName} </h3>
+      <h3> {followeeName}aaa </h3>
       <div>{PutChannelRegisterButton(
         isFollowing,
         props.loginId,

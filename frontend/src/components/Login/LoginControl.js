@@ -105,7 +105,7 @@ const LoginControl = (props) => {
                 id = 'agree'
                 onChange={onChangeCheckbox}
               />
-              ログインするにあたり<a href='/'>利用規約</a>に同意します。
+              ログインするにあたり<a href='/#/terms'>利用規約</a>に同意します。
             </p>
             <p
               className={Style.alert_text}

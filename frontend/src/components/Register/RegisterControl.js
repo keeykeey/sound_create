@@ -170,7 +170,7 @@ const RegisterControl = (props)=> {
                 value = 'true'
                 onChange={onChangeCheckbox}
               />
-              会員登録をするにあたり<a href='/'>利用規約</a>に同意します。
+              会員登録をするにあたり<a href='/#/terms'>利用規約</a>に同意します。
             </p>
             <p
               className={Style.alert_text}
