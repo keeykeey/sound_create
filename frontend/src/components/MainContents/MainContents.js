@@ -445,7 +445,7 @@ const EachUsersPage = (props) =>{
 
   return (
     <div>
-      <h3> {followeeName}aaa </h3>
+      <h3> {followeeName} </h3>
       <div>{PutChannelRegisterButton(
         isFollowing,
         props.loginId,
