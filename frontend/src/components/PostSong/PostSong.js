@@ -1,4 +1,3 @@
-//https://qiita.com/harumaxy/items/035ee46c82e8211d831c
 import {useState,useRef} from 'react'
 import Style from './PostSong.module.scss'
 import axios from 'axios'
@@ -65,15 +64,17 @@ const PostSongForm = (props) => {
     fileFormToUpload.append('tag',tag)
     fileFormToUpload.append('audio_file',audioFileForm.current.files[0])
 
+    const errorMessageField = document.querySelector('#errorMessageField')
+
     axios.post(DRFPOSTSONG_API_URL,
       fileFormToUpload,
       {headers:{
         'Content-Type':'multipart/form-data',
       }
     }).then(res=>{
-      console.log('under then ...',res.response)
+      errorMessageField.innerHTML = 'success!'
     }).catch(err=>{
-      console.log('under catch...',err.response)
+      errorMessageField.innerHTML='投稿に失敗しました。ログイン状態を確認してください。'
     })
   }
 
@@ -87,7 +88,6 @@ const PostSongForm = (props) => {
           className={Style.songTitle}
           type='text'
           onChange={handleSongTitleInput}
-          //validations = {}
           placeholder='song title'
         />
       </div>
@@ -161,6 +161,8 @@ const PostSongForm = (props) => {
         >
         </input>
       </div>
+        <div className={Style.errorMessage} id='errorMessageField'>{/*put error message here when validation is False*/}
+        </div>
       <br/>
 
       <button

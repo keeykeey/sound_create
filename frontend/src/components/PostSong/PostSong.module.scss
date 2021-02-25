@@ -76,6 +76,14 @@
   cursor:pointer;
 }
 
+.errorMessage{
+  color:red;
+  font-size:13px;
+  display:flex;
+  justify-content: center;
+  align-items:center;
+}
+
 .row{
   display:flex;
   flex-direction:row;
