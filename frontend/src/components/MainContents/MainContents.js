@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom';
 import Style from './MainContents.module.scss';
 import {Link} from 'react-router-dom';
 import AudioControl from '../AudioControl/AudioControl';
+import DeleteSongControl from '../DeleteSongControl/DeleteSongControl';
 import axios from 'axios';
 import endPoint from '../../services/endPoint';
 
@@ -166,7 +167,8 @@ const SongGridItemForPrivate = (
   song_id,
   likes_count,
 )=>{
-  const audioFilePath = String(audio_file).replace('https://','').replace('http://','')
+  //const audioFilePath = String(audio_file).replace('https://','').replace('http://','')
+  const audioFilePath = String(audio_file)//for development environment.comment out when it's production mode
 
   return(
     <div className={Style.eachSongBlock}>
@@ -183,6 +185,10 @@ const SongGridItemForPrivate = (
         <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
           <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
         </button>
+        <div className={Style.deleteButton} id={'deleteButtonOfSongId'+song_id}>
+          {DeleteSongControl(song_id)}
+        </div>
+
       </div>
       <div className={Style.item}>
       </div>
