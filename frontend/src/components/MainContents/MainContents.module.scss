@@ -1,3 +1,13 @@
+.row{
+  display:flex;
+  flex-direction:row;
+}
+
+.column{
+  display:flex;
+  flex-direction:column;
+}
+
 .eachSongBlock{
   margin :15px 15px 15px 0px;
   background-color:#ffffff;
@@ -94,4 +104,8 @@
 .errorMessage{
   color:red;
   font-size:13px;
+}
+
+.deleteButton{
+  margin:0px auto 0px 160px;
 }
