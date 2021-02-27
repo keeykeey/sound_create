@@ -167,8 +167,7 @@ const SongGridItemForPrivate = (
   song_id,
   likes_count,
 )=>{
-  //const audioFilePath = String(audio_file).replace('https://','').replace('http://','')
-  const audioFilePath = String(audio_file)//for development environment.comment out when it's production mode
+  const audioFilePath = String(audio_file).replace('https://','').replace('http://','')
 
   return(
     <div className={Style.eachSongBlock}>
@@ -182,15 +181,18 @@ const SongGridItemForPrivate = (
           {AudioControl(song_id)}
         </div>
         <br/>
-        <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
-          <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
-        </button>
-        <div className={Style.deleteButton} id={'deleteButtonOfSongId'+song_id}>
-          {DeleteSongControl(song_id)}
+        <div className={Style.row}>
+          <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
+            <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
+          </button>
+          <div className={Style.row}>
+            <div className={Style.deleteButton} id={'deleteButtonOfSongId'+String(song_id)}>
+              {DeleteSongControl(song_id)}
+            </div>
+          </div>
         </div>
-
       </div>
-      <div className={Style.item}>
+      <div className={Style.item} id={'rightSideOf'+String(song_id)}>
       </div>
     </div>)
 }
@@ -230,7 +232,7 @@ const SongGridItemForFavorite = (
 )}
 
 const ChannelRegisterButton = (loginId,followeeId,props) => {
-//  const [userRelations,setUserRelations] = useState([])
+  const [userRelations,setUserRelations] = useState([])
   const [isFollowing,setIsFollowing] = useState(false)
 
   useEffect(()=>{
@@ -239,7 +241,6 @@ const ChannelRegisterButton = (loginId,followeeId,props) => {
       res=>{
         console.log('status',res.data);
         console.log(
-          '3...',
           String(res.data.filter
             (key=>(String(key.followee))===(String(followeeId)))[0].followee)===String(followeeId)
           );
@@ -375,6 +376,7 @@ const Mypage = (props) => {
   const [song,setSong] = useState([])
   const [like,setLike] = useState([])
 
+
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL_FORVIEW)
     .then(res=>{setSong(res.data.filter(key=>String(key.user_id.id)===String(props.loginId)))})
@@ -406,6 +408,7 @@ const Mypage = (props) => {
         )
         }
       </ul>
+
     </div>
   )
 }
