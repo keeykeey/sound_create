@@ -1,9 +1,9 @@
 import React from 'react';
-import Style from './DeleteSongControl.module.scss'
-import axios from 'axios'
-import endPoint from '../../services/endPoint'
+import Style from './DeleteSongControl.module.scss';
+import axios from 'axios';
+import endPoint from '../../services/endPoint';
 
-const DRFPOSTSONG_API_URL_FORDELETE = endPoint.getPostSongUrlForDelete()
+const DRFPOSTSONG_API_URL_FORDELETE = endPoint.getPostSongUrlForPutDelete()
 
 const DeleteSongControl = (song_id) => {
 
@@ -18,11 +18,9 @@ const DeleteSongControl = (song_id) => {
   }
 
   return(
-    <div>
-      <button type='button' className={Style.deleteButton} onClick={(e)=>{deleteSong(song_id)}}>
-        <i className="far fa-trash-alt"> delete</i>
-      </button>
-    </div>
+    <button type='button' className={Style.deleteButton} onClick={(e)=>{deleteSong(song_id)}}>
+      <i className="far fa-trash-alt"></i>
+    </button>
   )
 }
 
