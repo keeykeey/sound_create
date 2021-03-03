@@ -12,6 +12,7 @@ const DRFPOSTSONG_API_URL_FORVIEW = endPoint.getPostSongUrlForView()
 const DRFLIKES_API_URL = endPoint.getLikesUrl()
 const DRFUSERRELATION_API_URL = endPoint.getUserRelationUrl()
 const DRFUSERRELATION_API_URL_FORVIEW = endPoint.getUserRelationUrlForView()//add
+const DRFPOSTSONG_API_URL_FORDELETE = endPoint.getPostSongUrlForPutDelete()
 
 const pushFavoriteButton = (followerId,followeeId)=>{
   const favoriteButton = document.querySelector(
@@ -24,7 +25,6 @@ const pushFavoriteButton = (followerId,followeeId)=>{
     }).then(
       function(error){
         if(!error.response){
-          console.log('success')
           favoriteButton.innerHTML = '登録解除'
           favoriteButton.style.backgroundColor='#c0c0c0'
         }
@@ -123,114 +123,6 @@ const PutChannelRegisterButton = (
   }
 }
 
-const SongGridItemForPublic = (
-  song_title,
-  audio_file,
-  user_name,
-  followeeId,
-  login_user_id,
-  song_id,
-  likes_count,
-)=>{
-  const audioFilePath = String(audio_file).replace('https://','').replace('http://','')
-
-  return(
-  <div className={Style.eachSongBlock}>
-    <div className={Style.item}>
-      <div className={Style.songTitle} >{song_title} </div>
-      <audio id = {'audioTagIdOfSong'+song_id}
-             className={Style.audio}
-             src={String(audioFilePath)}
-             />
-      <div>
-        {AudioControl(song_id)}
-      </div>
-      <div className={Style.userName} >
-        user_name : {user_name}
-        <Link to={'/owner/'+user_name}>
-          <button className={Style.linkToEachUsersPage}> チャンネルへ移動 </button>
-        </Link>
-      </div>
-      <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
-        <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
-      </button>
-    </div>
-    <div className={Style.item}>
-    </div>
-  </div>
-)}
-
-const SongGridItemForPrivate = (
-  song_title,
-  audio_file,
-  login_user_id,
-  song_id,
-  likes_count,
-)=>{
-  const audioFilePath = String(audio_file).replace('https://','').replace('http://','')
-
-  return(
-    <div className={Style.eachSongBlock}>
-      <div className={Style.item}>
-        <div className={Style.songTitle} >{song_title} </div>
-        <audio id = {'audioTagIdOfSong'+song_id}
-               className={Style.audio}
-               src={String(audioFilePath)}
-               />
-        <div>
-          {AudioControl(song_id)}
-        </div>
-        <br/>
-        <div className={Style.row}>
-          <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
-            <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
-          </button>
-          <div className={Style.row}>
-            <div className={Style.deleteButton} id={'deleteButtonOfSongId'+String(song_id)}>
-              {DeleteSongControl(song_id)}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className={Style.item} id={'rightSideOf'+String(song_id)}>
-      </div>
-    </div>)
-}
-
-const SongGridItemForFavorite = (
-  song_title,
-  audio_file,
-  user_name,
-  followeeId,
-  login_user_id,
-  song_id,
-  likes_count,
-)=>{
-  const audioFilePath = String(audio_file).replace('https://','').replace('http://','')
-
-  return(
-  <div className={Style.eachSongBlock}>
-    <div className={Style.item}>
-      <div className={Style.songTitle} >{song_title} </div>
-      <audio id = {'audioTagIdOfSong'+song_id}
-             className={Style.audio}
-             src={String(audioFilePath)}
-             />
-      <div>
-        {AudioControl(song_id)}
-      </div>
-      <div className={Style.userName} >
-        user_name : {user_name}
-      </div>
-      <button  className={Style.like} onClick={(e)=>pushLikesIcon(song_id,login_user_id,e)} >
-        <i className="fas fa-thumbs-up" id={'likeOf'+song_id+'and'+login_user_id}>{likes_count}</i>
-      </button>
-    </div>
-    <div className={Style.item}>
-    </div>
-  </div>
-)}
-
 const ChannelRegisterButton = (loginId,followeeId,props) => {
   const [userRelations,setUserRelations] = useState([])
   const [isFollowing,setIsFollowing] = useState(false)
@@ -239,11 +131,6 @@ const ChannelRegisterButton = (loginId,followeeId,props) => {
     axios.get(DRFUSERRELATION_API_URL + '?follower='+ String(loginId))
     .then(
       res=>{
-        console.log('status',res.data);
-        console.log(
-          String(res.data.filter
-            (key=>(String(key.followee))===(String(followeeId)))[0].followee)===String(followeeId)
-          );
         setIsFollowing(
           String(res.data.filter
             (key=>(String(key.followee))===(String(followeeId)))[0].followee)===String(followeeId)
@@ -294,16 +181,34 @@ const Public = (props) => {
       </h3>
       <hr/>
       <ul>
-        {song.map(
-          song => SongGridItemForPublic(
-            song.song_title,
-            song.audio_file,
-            song.user_id.username,
-            song.user_id.id,
-            props.loginId,
-            song.song_id,
-            like.filter(key=>String(key.song_id)===String(song.song_id)).length,
-        ))}
+        {
+         song.map(song=>
+           <div className={Style.eachSongBlock}>
+             <div className={Style.item}>
+               <div className={Style.songTitle} >{song.song_title} </div>
+               <audio id = {'audioTagIdOfSong'+song.song_id}
+                      className={Style.audio}
+                      src={String(song.audio_file).replace('https://','').replace('http://','')}
+                      />
+               <div>
+                 {AudioControl(song.song_id)}
+               </div>
+               <div className={Style.userName} >
+                 user_name : {song.user_id.user_name}
+                 <Link to={'/owner/'+song.user_id.user_name}>
+                   <button className={Style.linkToEachUsersPage}> チャンネルへ移動 </button>
+                 </Link>
+               </div>
+               <button  className={Style.like} onClick={(e)=>pushLikesIcon(song.song_id,props.loginId,e)} >
+                 <i className="fas fa-thumbs-up" id={'likeOf'+song.song_id+'and'+props.loginId}>
+                   {like.filter(key=>String(key.song_id)===String(song.song_id)).length}
+                 </i>
+               </button>
+             </div>
+             <div className={Style.item}>
+             </div>
+           </div>
+         )}
       </ul>
     </div>
   )
@@ -375,7 +280,10 @@ const SortByGenre = (props) => {
 const Mypage = (props) => {
   const [song,setSong] = useState([])
   const [like,setLike] = useState([])
+  const [modalEdit,setModalEdit] = useState(false)
+  const [modalDelete,setModalDelete] = useState(false)
 
+  const audioFilePath = String(song.audio_file).replace('https://','').replace('http://','')
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL_FORVIEW)
@@ -387,6 +295,48 @@ const Mypage = (props) => {
     .then(res=>{setLike(res.data)})
   },[]);
 
+  function deleteSong(song_id){
+    axios.delete(
+      DRFPOSTSONG_API_URL_FORDELETE + String(song_id)
+    ).then(res=>{
+      window.location.reload();
+    }).catch(err=>{
+      alert('削除に失敗しました。入力内容を確認してください。')
+    })
+  }
+
+  const ModalDeleteSong = ({modalDelete,setModalDelete,song_id}) => {
+    if(modalDelete){
+      return(
+        <div className={Style.overlay}>
+          <div className={Style.insideOverlay}>
+            <p>削除しますか？</p>
+            <button onClick={()=>deleteSong(song_id)}>
+              yes</button>
+            <button onClick={()=>setModalDelete(false)}>
+              no</button>
+          </div>
+        </div>
+      )}else{
+        return null;
+      }
+  }
+
+  const ModalEditSong = ({modalEdit,setModalEdit}) => {
+    if(modalEdit){
+      return(
+        <div className={Style.overlay}>
+          <div className={Style.insideOverlay}>
+            <p>audio edit menu</p>
+            <button onClick={()=>setModalEdit(false)}>
+              close</button>
+          </div>
+        </div>
+      )}else{
+        return null;
+      }
+  }
+
   return(
     <div>
       <h3>
@@ -397,18 +347,46 @@ const Mypage = (props) => {
       </Link>
       <hr/>
       <ul>
-        {song.map(
-          song => SongGridItemForPrivate(
-            song.song_title,
-            song.audio_file,
-            props.loginId,
-            song.song_id,
-            like.filter(key=>String(key.song_id)===String(song.song_id)).length,
-          )
-        )
-        }
+        {song.map(song=>
+          <div className={Style.eachSongBlock}>
+            <div className={Style.item}>
+              <div className={Style.songTitle} >{song.song_title} </div>
+              <audio id = {'audioTagIdOfSong'+song.song_id}
+                     className={Style.audio}
+                     src={String(song.audio_file).replace('https://','').replace('http://','')}
+                     />
+              <div>
+                {AudioControl(song.song_id)}
+              </div>
+              <br/>
+              <div className={Style.row}>
+                <button
+                  className={Style.like}
+                  onClick={(e)=>pushLikesIcon(
+                    song.song_id,
+                    props.loginId,
+                    e)} >
+                  <i className="fas fa-thumbs-up"
+                     id={'likeOf'+song.song_id+'and'+props.loginId}
+                  >{like.filter(key=>String(key.song_id)===String(song.song_id)).length}</i>
+                </button>
+                <button className={Style.deleteButton}
+                        onClick={()=>setModalDelete(true)}>
+                  <i className="far fa-trash-alt"></i>
+                </button>
+                <ModalDeleteSong modalDelete={modalDelete} setModalDelete={setModalDelete} song_id={song.song_id}/>
+                <button className={Style.editPageButton}
+                        onClick={()=>setModalEdit(true)}>
+                   <i className="fas fa-edit"></i>
+                </button>
+                <ModalEditSong modalEdit={modalEdit} setModalEdit={setModalEdit}/>
+              </div>
+            </div>
+            <div className={Style.item} id={'rightSideOf'+String(song.song_id)}>
+            </div>
+          </div>
+        )}
       </ul>
-
     </div>
   )
 }
@@ -462,24 +440,37 @@ const EachUsersPage = (props) =>{
       )}</div>
       <hr/>
       <ul key={song.song_id}>
-        {song.map(
-          song=>SongGridItemForFavorite(
-            song.song_title,
-            song.audio_file,
-            song.user_id.username,
-            song.user_id.id,
-            props.loginId,
-            song.song_id,
-            likes.filter(key=>String(key.song_id)===String(song.song_id)).length,
-          ))}
+        {
+          song.map(song=>
+            <div className={Style.eachSongBlock}>
+              <div className={Style.item}>
+                <div className={Style.songTitle} >{song.song_title} </div>
+                <audio id = {'audioTagIdOfSong'+song.song_id}
+                       className={Style.audio}
+                       src={String(song.audio_file).replace('https://','').replace('http://','')}
+                       />
+                <div>
+                  {AudioControl(song.song_id)}
+                </div>
+                <div className={Style.userName} >
+                  user_name : {song.user_name}
+                </div>
+                <button  className={Style.like} onClick={(e)=>pushLikesIcon(song.song_id,props.loginId,e)} >
+                  <i className="fas fa-thumbs-up" id={'likeOf'+song.song_id+'and'+props.loginId}>
+                    {likes.filter(key=>String(key.song_id)===String(song.song_id)).length}
+                  </i>
+                </button>
+              </div>
+              <div className={Style.item}>
+              </div>
+            </div>)
+        }
       </ul>
     </div>
   );
 }
 
 const MainContents = {
-  SongGridItemForPublic,
-  SongGridItemForPrivate,
   Public,
   SortByUser,
   SortByGenre,
