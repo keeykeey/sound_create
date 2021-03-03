@@ -86,7 +86,7 @@
 }
 
 .linkToEachUsersPage{
-  margin:0px 0px auto auto;
+  margin:0px auto auto 10px;
   width:200px;
   height:30px;
   font-size:0.9rem;
@@ -107,5 +107,49 @@
 }
 
 .deleteButton{
-  margin:0px auto 0px 160px;
+  height:25px;
+  width:30px;
+  margin:0 0 0 0 ;
+  cursor:pointer;
+  border-width:thin;
+  font-size:18px;
+}
+
+.deleteButton:hover{
+  background-color:#cccccc;
+}
+
+.editPageButton{
+  height:25px;
+  width:30px;
+  margin:0 0 0 0;
+  cursor:pointer;
+  border-width:thin;
+  font-size:18px;
+}
+
+.editPageButton:hover{
+  background-color:#cccccc;
+}
+
+.overlay{
+  /*　画面全体を覆う設定　*/
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgba(0,0,0,0.5);
+
+  /*　画面の中央に要素を表示させる設定　*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.insideOverlay{
+  z-index:2;
+  width:50%;
+  padding: 1em;
+  background:#ffffff;
 }
