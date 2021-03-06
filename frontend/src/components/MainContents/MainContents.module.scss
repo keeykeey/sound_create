@@ -149,7 +149,86 @@
 
 .insideOverlay{
   z-index:2;
-  width:50%;
+  width:320px;
   padding: 1em;
   background:#ffffff;
+}
+
+.nullSpace{
+  width:95%;
+}
+
+.closeIcon{
+  display:flex;
+  justify-content:flex-end;
+  cursor:pointer;
+}
+
+.textLabel{
+  display:flex;
+  justify-content: center;
+  align-items:center;
+  margin:10px 0px 10px 10px;
+  height:16px;
+  width:120px;
+  font-size:16px;
+  color:#000000;
+}
+
+.songTitle{
+  height:20px;
+  width:300px;
+  font-size:16px;
+  margin: 5px 5px 5px 5px;
+}
+
+.radio{
+  margin:5px 5px 5px 5px;
+  background-color:#aa88ff;
+}
+
+.textRadio{
+  margin-top:6px;
+}
+
+.select{
+  width:150px;
+  margin:5px 5px 5px 5px;
+}
+
+.tag{
+  height:20px;
+  width:300px;
+  font-size:16px;
+  margin:5px 5px 5px 5px;
+}
+
+.audioUpload{
+  margin:5px 5px 5px 5px;
+}
+
+.button{
+  height:36px;
+  width:310px;
+  margin:5px 5px 5px 5px;
+  cursor:pointer;
+  border-width:thin;
+  background-color:#00cc55;
+}
+
+.button:hover{
+  background-color:#00aa33;
+}
+
+.buttoon{
+  height:28px;
+  cursor:pointer;
+}
+
+.errorMessage{
+  color:red;
+  font-size:13px;
+  display:flex;
+  justify-content: center;
+  align-items:center;
 }
