@@ -4,7 +4,7 @@
 
 　・作曲などした自作音源をアップロードし、共有、公開できるサイトです。
 
-    ・url  https://www.keeykeey.com　
+　・url  https://www.keeykeey.com　
 
 2 機能
 
