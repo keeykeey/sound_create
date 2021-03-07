@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Style from './Layout.module.scss'
 import Header from '../Header/Header'
 import Sidebar from '../Sidebar/Sidebar'
@@ -12,16 +12,30 @@ const loginName = localStorage.getItem('username');
 const loginId = localStorage.getItem('user_id');
 
 const HomeLayout = (props)=>{
+  const [windowWidth,setWindowWidth]=useState(window.innerWidth)
+  window.addEventListener('resize',()=>{
+    setWindowWidth(window.innerWidth)
+  })
+
+  const [showSidebar,setShowSidebar]=useState(false)
+
   return(
     <div className={Style.col}>
       <div className={Style.topSize}>
-        <Header/>
+        <Header windowWidth={windowWidth} setWindowWidth={setWindowWidth}
+                showSidebar={showSidebar} setShowSidebar={setShowSidebar}/>
       </div>
       <div className = {Style.row}>
         <Router>
+          {windowWidth>500?
           <div className={Style.leftSide}>
-            <Sidebar loginName={loginName} loginId={loginId}/>
-          </div>
+            <Sidebar loginName={loginName} loginId={loginId} windowWidth={windowWidth} setWindowWidth={setWindowWidth}/>
+          </div>:null}
+          {(windowWidth<=500 && showSidebar)?
+          <div className={Style.leftSide}>
+            <Sidebar loginName={loginName} loginId={loginId} windowWidth={windowWidth} setWindowWidth={setWindowWidth}/>
+          </div>:null}
+
           <div className={Style.rightSide}>
             <Switch>
               <Route exact path='/user/'>
