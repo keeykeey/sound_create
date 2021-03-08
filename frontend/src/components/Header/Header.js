@@ -50,10 +50,6 @@ const Header = ({windowWidth,setWindowWidth,showSidebar,setShowSidebar}) => {
       <div className={Style.icon}>
         <DisplaySidebarIcon/>
       </div>:null}
-      {(windowWidth>500 && showSidebar)?
-      <div className={Style.icon}>
-        <DisplaySidebarIcon/>
-      </div>:null}
       <div className={ Style.headerText }>
         <Link to ='/'>Sound_Create</Link>
       </div>
