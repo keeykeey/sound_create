@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom';
 import Style from './MainContents.module.scss';
 import {Link} from 'react-router-dom';
 import AudioControl from '../AudioControl/AudioControl';
+import LinkToLogin from '../Login/LinkToLogin.js'
 import axios from 'axios';
 import endPoint from '../../services/endPoint';
 
@@ -51,31 +52,34 @@ const cancelFavoriteButton = (
     .then(res=>axios.delete(DRFUSERRELATION_API_URL + String(res)))
 }
 
-const pushLikesIcon = (song_id,user_id) =>{
+const pushLikesIcon = (song_id,user_id,modalWhenPushLike,setModalWhenPushLike) =>{
   const likeIcon = document.querySelector(
     '#likeOf'+String(song_id)+'and'+String(user_id)
   )
   const presentLikeNum = Number(likeIcon.textContent)
 
-  return(
-      axios.post(DRFLIKES_API_URL,{
-        song_id,
-        user_id,
-      }).then(
-        function(error){
-          if(!error.response){
-            likeIcon.innerHTML=String(presentLikeNum+1)
-          }
+  if(!user_id){
+    console.log('not logged in...')
+    setModalWhenPushLike(true)
+  }else if(user_id){
+    axios.post(DRFLIKES_API_URL,{
+      song_id,
+      user_id,
+    }).then(
+      function(error){
+        if(!error.response){
+          likeIcon.innerHTML=String(presentLikeNum+1)
         }
-      ).catch(
-        function(error){
-          if(error.response){
-            subtractLikeNumInDb(song_id,user_id)
-            likeIcon.innerHTML=String(presentLikeNum-1)
-          }
+      }
+    ).catch(
+      function(error){
+        if(error.response){
+          subtractLikeNumInDb(song_id,user_id)
+          likeIcon.innerHTML=String(presentLikeNum-1)
         }
-      )
-  )
+      }
+    )
+  }
 }
 
 const subtractLikeNumInDb = (song_id,user_id) => {
@@ -163,6 +167,7 @@ const ChannelRegisterButton = (loginId,followeeId,props) => {
 const Public = (props) => {
   const [song,setSong] = useState([])
   const [like,setLike] = useState([])
+  const [modalWhenPushLike,setModalWhenPushLike]=useState(false)
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL_FORVIEW)
@@ -174,12 +179,32 @@ const Public = (props) => {
     .then(res=>{setLike(res.data)})
   },[]);
 
+  const ModalWhenPushLike = (
+    {modalWhenPushLike,setModalWhenPushLike}
+  ) => {
+    if(modalWhenPushLike){
+      return(
+        <div className={Style.overlayWhenPushLike} onClick={()=>setModalWhenPushLike(false)}>
+          <div className={Style.insideOverlay} onClick={(e)=>e.stopPropagation()}>
+            評価するにはログインしてください。
+            <hr/>
+            <LinkToLogin/>
+          </div>
+        </div>
+      )}else{
+        return null;
+      }
+  }
+
   return(
     <div>
       <h3>
         Page for everyone
       </h3>
       <hr/>
+      <ModalWhenPushLike
+        modalWhenPushLike={modalWhenPushLike}
+        setModalWhenPushLike={setModalWhenPushLike}/>
       <ul>
         {
          song.map(song=>
@@ -199,7 +224,13 @@ const Public = (props) => {
                    <button className={Style.linkToEachUsersPage}> チャンネルへ移動 </button>
                  </Link>
                </div>
-               <button  className={Style.like} onClick={(e)=>pushLikesIcon(song.song_id,props.loginId,e)} >
+               <button  className={Style.like}
+                        onClick={(e)=>pushLikesIcon(
+                          song.song_id,
+                          props.loginId,
+                          modalWhenPushLike,
+                          setModalWhenPushLike,
+                          e)} >
                  <i className="fas fa-thumbs-up" id={'likeOf'+song.song_id+'and'+props.loginId}>
                    {like.filter(key=>String(key.song_id)===String(song.song_id)).length}
                  </i>
@@ -559,6 +590,7 @@ const EachUsersPage = (props) =>{
   const [likes,setLikes] = useState([]);
   const [isFollowing,setIsFollowing] = useState(false)
   const [followeeId,setFolloweeId] = useState([])
+  const [modalWhenPushLike,setModalWhenPushLike]=useState(false)
 
   useEffect(()=>{
     axios.get(DRFPOSTSONG_API_URL_FORVIEW)
@@ -592,6 +624,23 @@ const EachUsersPage = (props) =>{
     .catch(error=>console.log('error...',error))
   },[props.loginId,followeeName])
 
+  const ModalWhenPushLike = (
+    {modalWhenPushLike,setModalWhenPushLike}
+  ) => {
+    if(modalWhenPushLike){
+      return(
+        <div className={Style.overlayWhenPushLike} onClick={()=>setModalWhenPushLike(false)}>
+          <div className={Style.insideOverlay} onClick={(e)=>e.stopPropagation()}>
+            評価するにはログインしてください。
+            <hr/>
+            <LinkToLogin/>
+          </div>
+        </div>
+      )}else{
+        return null;
+      }
+  }
+
   return (
     <div>
       <h3> {followeeName} </h3>
@@ -601,6 +650,9 @@ const EachUsersPage = (props) =>{
         followeeId,
       )}</div>
       <hr/>
+      <ModalWhenPushLike
+        modalWhenPushLike={modalWhenPushLike}
+        setModalWhenPushLike={setModalWhenPushLike}/>
       <ul key={song.song_id}>
         {
           song.map(song=>
@@ -617,7 +669,13 @@ const EachUsersPage = (props) =>{
                 <div className={Style.userName} >
                   user_name : {song.user_name}
                 </div>
-                <button  className={Style.like} onClick={(e)=>pushLikesIcon(song.song_id,props.loginId,e)} >
+                <button  className={Style.like}
+                         onClick={(e)=>pushLikesIcon(
+                           song.song_id,
+                           props.loginId,
+                           modalWhenPushLike,
+                           setModalWhenPushLike,
+                           e)} >
                   <i className="fas fa-thumbs-up" id={'likeOf'+song.song_id+'and'+props.loginId}>
                     {likes.filter(key=>String(key.song_id)===String(song.song_id)).length}
                   </i>
