@@ -219,7 +219,7 @@ const Public = (props) => {
                  {AudioControl(song.song_id)}
                </div>
                <div className={Style.userName} >
-                 user_name : {song.user_id.username}
+                 投稿者 : {song.user_id.username}
                  <Link to={'/owner/'+song.user_id.username}>
                    <button className={Style.linkToEachUsersPage}> チャンネルへ移動 </button>
                  </Link>
