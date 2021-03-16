@@ -1,11 +1,11 @@
 import Style from './AudioControl.module.scss';
 import myMath from '../../mylibrary/myMath'
 
-const AudioControl = (
-  song_id
+const AudioControlApi = (
+  song_id,
 )=>{
+  let is_connected = false;
   let is_playing = false;
-  const defaultAudioVolume = 0.5
 
   function showAudioCurrentTime(){
     const audioElement = document.querySelector('#audioTagIdOfSong'+String(song_id));
@@ -29,24 +29,37 @@ const AudioControl = (
     is_playing = false;
   }
 
-  function playAndPauseAudio(){
-    const audioElement = document.querySelector('#audioTagIdOfSong'+String(song_id));
-    audioElement.volume = defaultAudioVolume;
-    showAudioCurrentTime()
-    showAudioDuration()
-    if (is_playing === false){
-      audioElement.play();
-      is_playing = true;
-    }else if(is_playing === true){
-      audioElement.pause()
-      is_playing = false;
-    }
-  }
-
   function handleChangeAudioVolume(event){
     const value = event.target.value;
     const audioElement = document.querySelector('#audioTagIdOfSong'+String(song_id));
     audioElement.volume = myMath.roundNumberDown(Number(value)/100,2)
+  }
+
+  const pushPlayButton = async()=>{
+    const audioContext = new AudioContext();
+    audioContext.crossOrigin='anonymous';
+    const audioElement = document.querySelector('#audioTagIdOfSong'+String(song_id));
+    if (is_connected===false){
+      const track = audioContext.createMediaElementSource(audioElement);
+
+      track.connect(audioContext.destination);
+      is_connected = true;
+    }
+
+    if (audioContext.state === 'suspended'){
+      audioContext.resume();
+    }
+
+    if (is_playing === false){
+      audioElement.play();
+      is_playing = true
+      showAudioCurrentTime()
+      showAudioDuration()
+
+    }else if (is_playing === true){
+      audioElement.pause();
+      is_playing = false
+    }
   }
 
   return(
@@ -68,8 +81,12 @@ const AudioControl = (
         onClick = {stopAudio}
         ><i className="fas fa-stop"></i></button>
         <button
+          id = {'playButtonIdOfSong'+song_id}
           className = {Style.playOrPauseButton}
-          onClick={playAndPauseAudio}
+          onClick = {pushPlayButton}
+          data-playing='false'
+          role='switch'
+          aria-checked='false'
         ><i className="fas fa-pause"/> / <i className="fas fa-play"/></button>
         <i className="fas fa-volume-up"></i>
         <input
@@ -85,4 +102,4 @@ const AudioControl = (
   )
 }
 
-export default AudioControl
+export default AudioControlApi

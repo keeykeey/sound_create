@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom';
 import Style from './MainContents.module.scss';
 import {Link} from 'react-router-dom';
 import AudioControl from '../AudioControl/AudioControl';
+import AudioControlApi from '../AudioControl/AudioControlApi';
 import LinkToLogin from '../Login/LinkToLogin.js'
 import axios from 'axios';
 import endPoint from '../../services/endPoint';
@@ -216,7 +217,7 @@ const Public = (props) => {
                       src={String(song.audio_file).replace('https://','').replace('http://','')}
                       />
                <div>
-                 {AudioControl(song.song_id)}
+                 {AudioControlApi(song.song_id)}
                </div>
                <div className={Style.userName} >
                  投稿者 : {song.user_id.username}
